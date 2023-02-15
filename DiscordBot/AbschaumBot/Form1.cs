@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+
+
 
 namespace AbschaumBot
 {
+
     public partial class Form1 : Form
     {
         public Form1()
@@ -25,10 +30,14 @@ namespace AbschaumBot
 
     public class Overlay : Form
     {
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
         private Button minimizeButton;
         private Button closeButton;
         private bool isMinimized;
         private CommandList commandList;
+        private ComboBox processComboBox;
 
         public Overlay()
         {
@@ -76,6 +85,38 @@ namespace AbschaumBot
             this.Controls.Add(this.closeButton);
             this.closeButton.Click += new EventHandler(CloseButton_Click);
 
+            // Add a dropdown of running processes to choose from
+            this.processComboBox = new ComboBox();
+            this.processComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.processComboBox.Font = new Font("Arial", 12, FontStyle.Bold);
+            this.processComboBox.ForeColor = Color.Blue;
+            this.processComboBox.FlatStyle = FlatStyle.Flat;
+            this.processComboBox.BackColor = Color.White;
+            this.processComboBox.Location = new Point(10, 70);
+            this.Controls.Add(this.processComboBox);
+
+            // Fill the dropdown with the names of running processes
+            Process[] processes = Process.GetProcesses();
+            foreach (Process process in processes)
+            {
+                if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                {
+                    this.processComboBox.Items.Add(process.ProcessName);
+                }
+            }
+
+            // Add a button to the form to attach the selected process and send keys
+            Button attachButton = new Button();
+            attachButton.Text = "Attach and Send Keys";
+            attachButton.Font = new Font("Arial", 12, FontStyle.Bold);
+            attachButton.ForeColor = Color.Blue;
+            attachButton.FlatStyle = FlatStyle.Flat;
+            attachButton.FlatAppearance.BorderSize = 0;
+            attachButton.AutoSize = true;
+            attachButton.Location = new Point(10, 110);
+            this.Controls.Add(attachButton);
+            attachButton.Click += new EventHandler(AttachButton_Click);
+
             // Set the initial state of the form to not minimized
             this.isMinimized = false;
 
@@ -93,10 +134,33 @@ namespace AbschaumBot
             writeTestButton.FlatStyle = FlatStyle.Flat;
             writeTestButton.FlatAppearance.BorderSize = 0;
             writeTestButton.AutoSize = true;
-            writeTestButton.Location = new Point(10, 10);
+            writeTestButton.Location = new Point(10, 150);
             this.Controls.Add(writeTestButton);
             writeTestButton.Click += new EventHandler(WriteTestButton_Click);
         }
+
+        private void AttachButton_Click(object sender, EventArgs e)
+        {
+            // Get the selected process from the dropdown
+            string processName = this.processComboBox.SelectedItem as string;
+
+            // Attach to the process by name
+            Process[] processes = Process.GetProcessesByName(processName);
+            if (processes.Length > 0)
+            {
+                Process process = processes[0];
+                IntPtr processHandle = process.MainWindowHandle;
+
+                // Bring the process to the front
+                SetForegroundWindow(processHandle);
+
+                // Send the desired keys to the process
+                SendKeys.SendWait("{T}");
+                SendKeys.SendWait("Bot Writing Test lul");
+                SendKeys.SendWait("{ENTER}");
+            }
+        }
+
         private void WriteTestButton_Click(object sender, EventArgs e)
         {
             // Call the WriteTest method of the CommandList instance
