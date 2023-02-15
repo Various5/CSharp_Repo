@@ -44,7 +44,7 @@
                 Gets the name of the application.
             </summary>
         </member>
-        <member name="M:Discord.API.DiscordRestApiClient.#ctor(Discord.Net.Rest.RestClientProvider,System.String,Discord.RetryMode,Newtonsoft.Json.JsonSerializer,System.Boolean)">
+        <member name="M:Discord.API.DiscordRestApiClient.#ctor(Discord.Net.Rest.RestClientProvider,System.String,Discord.RetryMode,Newtonsoft.Json.JsonSerializer,System.Boolean,System.Func{Discord.IRateLimitInfo,System.Threading.Tasks.Task})">
             <exception cref="T:System.ArgumentException">Unknown OAuth token type.</exception>
         </member>
         <member name="M:Discord.API.DiscordRestApiClient.SetBaseUrl(System.String)">
@@ -68,21 +68,21 @@
         <member name="M:Discord.API.DiscordRestApiClient.CreateMessageAsync(System.UInt64,Discord.API.Rest.CreateMessageParams,Discord.RequestOptions)">
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
         </member>
-        <member name="M:Discord.API.DiscordRestApiClient.CreateWebhookMessageAsync(System.UInt64,Discord.API.Rest.CreateWebhookMessageParams,Discord.RequestOptions)">
+        <member name="M:Discord.API.DiscordRestApiClient.CreateWebhookMessageAsync(System.UInt64,Discord.API.Rest.CreateWebhookMessageParams,Discord.RequestOptions,System.Nullable{System.UInt64})">
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
             <exception cref="T:System.InvalidOperationException">This operation may only be called with a <see cref="F:Discord.TokenType.Webhook"/> token.</exception>
         </member>
-        <member name="M:Discord.API.DiscordRestApiClient.ModifyWebhookMessageAsync(System.UInt64,System.UInt64,Discord.API.Rest.ModifyWebhookMessageParams,Discord.RequestOptions)">
+        <member name="M:Discord.API.DiscordRestApiClient.ModifyWebhookMessageAsync(System.UInt64,System.UInt64,Discord.API.Rest.ModifyWebhookMessageParams,Discord.RequestOptions,System.Nullable{System.UInt64})">
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
             <exception cref="T:System.InvalidOperationException">This operation may only be called with a <see cref="F:Discord.TokenType.Webhook"/> token.</exception>
         </member>
-        <member name="M:Discord.API.DiscordRestApiClient.DeleteWebhookMessageAsync(System.UInt64,System.UInt64,Discord.RequestOptions)">
+        <member name="M:Discord.API.DiscordRestApiClient.DeleteWebhookMessageAsync(System.UInt64,System.UInt64,Discord.RequestOptions,System.Nullable{System.UInt64})">
             <exception cref="T:System.InvalidOperationException">This operation may only be called with a <see cref="F:Discord.TokenType.Webhook"/> token.</exception>
         </member>
         <member name="M:Discord.API.DiscordRestApiClient.UploadFileAsync(System.UInt64,Discord.API.Rest.UploadFileParams,Discord.RequestOptions)">
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
         </member>
-        <member name="M:Discord.API.DiscordRestApiClient.UploadWebhookFileAsync(System.UInt64,Discord.API.Rest.UploadWebhookFileParams,Discord.RequestOptions)">
+        <member name="M:Discord.API.DiscordRestApiClient.UploadWebhookFileAsync(System.UInt64,Discord.API.Rest.UploadWebhookFileParams,Discord.RequestOptions,System.Nullable{System.UInt64})">
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
             <exception cref="T:System.InvalidOperationException">This operation may only be called with a <see cref="F:Discord.TokenType.Webhook"/> token.</exception>
         </member>
@@ -107,12 +107,8 @@
             <exception cref="T:System.ArgumentException"><paramref name="guildId"/> must not be equal to zero.</exception>
             <exception cref="T:System.ArgumentNullException"><paramref name="args"/> must not be <see langword="null"/>.</exception>
         </member>
-        <member name="M:Discord.API.DiscordRestApiClient.GetGuildIntegrationsAsync(System.UInt64,Discord.RequestOptions)">
+        <member name="M:Discord.API.DiscordRestApiClient.GetIntegrationsAsync(System.UInt64,Discord.RequestOptions)">
             <exception cref="T:System.ArgumentException"><paramref name="guildId"/> must not be equal to zero.</exception>
-        </member>
-        <member name="M:Discord.API.DiscordRestApiClient.CreateGuildIntegrationAsync(System.UInt64,Discord.API.Rest.CreateGuildIntegrationParams,Discord.RequestOptions)">
-            <exception cref="T:System.ArgumentException"><paramref name="guildId"/> and <paramref name="args.Id.Id"/> must not be equal to zero.</exception>
-            <exception cref="T:System.ArgumentNullException"><paramref name="args"/> must not be <see langword="null"/>.</exception>
         </member>
         <member name="M:Discord.API.DiscordRestApiClient.GetInviteAsync(System.String,Discord.RequestOptions)">
             <exception cref="T:System.ArgumentException"><paramref name="inviteId"/> cannot be blank.</exception>
@@ -140,7 +136,7 @@
         <member name="M:Discord.API.DiscordRestApiClient.CheckState">
             <exception cref="T:System.InvalidOperationException">Client is not logged in.</exception>
         </member>
-        <member name="M:Discord.Net.Rest.DefaultRestClient.SendAsync(System.String,System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object},System.Threading.CancellationToken,System.Boolean,System.String)">
+        <member name="M:Discord.Net.Rest.DefaultRestClient.SendAsync(System.String,System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object},System.Threading.CancellationToken,System.Boolean,System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.IEnumerable{System.String}}})">
             <exception cref="T:System.InvalidOperationException">Unsupported param type.</exception>
         </member>
         <member name="M:Discord.Net.Rest.DefaultRestClientProvider.Create(System.Boolean)">
@@ -260,7 +256,7 @@
             <summary>
             // Decode a base58-encoded string into byte array
             </summary>
-            <param name="strBase58">Base58 data string</param>
+            <param name="input">Base58 data string</param>
             <returns>Byte array</returns>
         </member>
         <member name="F:Discord.Net.ED25519.Ed25519.PublicKeySize">
@@ -465,7 +461,7 @@
         <member name="M:Discord.Rest.BaseDiscordClient.Discord#IDiscordClient#GetGlobalApplicationCommandAsync(System.UInt64,Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.BaseDiscordClient.Discord#IDiscordClient#GetGlobalApplicationCommandsAsync(Discord.RequestOptions)">
+        <member name="M:Discord.Rest.BaseDiscordClient.Discord#IDiscordClient#GetGlobalApplicationCommandsAsync(System.Boolean,System.String,Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.BaseDiscordClient.Discord#IDiscordClient#StartAsync">
@@ -502,7 +498,7 @@
         <member name="M:Discord.Rest.DiscordRestClient.OnLogoutAsync">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.DiscordRestClient.ParseHttpInteractionAsync(System.String,System.String,System.String,System.String)">
+        <member name="M:Discord.Rest.DiscordRestClient.ParseHttpInteractionAsync(System.String,System.String,System.String,System.String,System.Func{Discord.Rest.InteractionProperties,System.Boolean})">
             <summary>
                 Creates a <see cref="T:Discord.Rest.RestInteraction"/> from a http message.
             </summary>
@@ -515,7 +511,7 @@
             </returns>
             <exception cref="T:Discord.Rest.BadSignatureException">Thrown when the signature doesn't match the public key.</exception>
         </member>
-        <member name="M:Discord.Rest.DiscordRestClient.ParseHttpInteractionAsync(System.String,System.String,System.String,System.Byte[])">
+        <member name="M:Discord.Rest.DiscordRestClient.ParseHttpInteractionAsync(System.String,System.String,System.String,System.Byte[],System.Func{Discord.Rest.InteractionProperties,System.Boolean})">
             <summary>
                 Creates a <see cref="T:Discord.Rest.RestInteraction"/> from a http message.
             </summary>
@@ -567,7 +563,7 @@
         <member name="M:Discord.Rest.DiscordRestClient.Discord#IDiscordClient#GetWebhookAsync(System.UInt64,Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.DiscordRestClient.Discord#IDiscordClient#GetGlobalApplicationCommandsAsync(Discord.RequestOptions)">
+        <member name="M:Discord.Rest.DiscordRestClient.Discord#IDiscordClient#GetGlobalApplicationCommandsAsync(System.Boolean,System.String,Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.DiscordRestClient.Discord#IDiscordClient#GetGlobalApplicationCommandAsync(System.UInt64,Discord.RequestOptions)">
@@ -590,6 +586,9 @@
             <summary>
                 Gets the user that was banned.
             </summary>
+            <remarks>
+                Will be <see langword="null"/> if the user is a 'Deleted User#....' because Discord does send user data for deleted users.
+            </remarks>
             <returns>
                 A user object representing the banned user.
             </returns>
@@ -603,6 +602,9 @@
             <summary>
                 Gets the bot that was added.
             </summary>
+            <remarks>
+                Will be <see langword="null"/> if the bot is a 'Deleted User#....' because Discord does send user data for deleted users.
+            </remarks>
             <returns>
                 A user object representing the bot.
             </returns>
@@ -1068,6 +1070,9 @@
             <summary>
                 Gets the user that created this invite if available.
             </summary>
+            <remarks>
+                Will be <see langword="null"/> if the user is a 'Deleted User#....' because Discord does send user data for deleted users.
+            </remarks>
             <returns>
                 A user that created this invite or <see langword="null"/>.
             </returns>
@@ -1131,6 +1136,9 @@
             <summary>
                 Gets the user that created this invite if available.
             </summary>
+            <remarks>
+                Will be <see langword="null"/> if the user is a 'Deleted User#....' because Discord does send user data for deleted users.
+            </remarks>
             <returns>
                 A user that created this invite or <see langword="null"/>.
             </returns>
@@ -1239,6 +1247,9 @@
             <summary>
                 Gets the user that was kicked.
             </summary>
+            <remarks>
+                Will be <see langword="null"/> if the user is a 'Deleted User#....' because Discord does send user data for deleted users.
+            </remarks>
             <returns>
                 A user object representing the kicked user.
             </returns>
@@ -1370,6 +1381,9 @@
             <summary>
                 Gets the user that the changes were performed on.
             </summary>
+            <remarks>
+                Will be <see langword="null"/> if the user is a 'Deleted User#....' because Discord does send user data for deleted users.
+            </remarks>
             <returns>
                 A user object representing the user who the changes were performed on.
             </returns>
@@ -1438,6 +1452,9 @@
             <summary>
                 Gets the user of the messages that were deleted.
             </summary>
+            <remarks>
+                Will be <see langword="null"/> if the user is a 'Deleted User#....' because Discord does send user data for deleted users.
+            </remarks>
             <returns>
                 A user object representing the user that created the deleted messages.
             </returns>
@@ -1467,6 +1484,9 @@
             <summary>
                 Gets the user of the message that was pinned if available.
             </summary>
+            <remarks>
+                Will be <see langword="null"/> if the user is a 'Deleted User#....' because Discord does send user data for deleted users.
+            </remarks>
             <returns>
                 A user object representing the user that created the pinned message or <see langword="null"/>.
             </returns>
@@ -1496,6 +1516,9 @@
             <summary>
                 Gets the user of the message that was unpinned if available.
             </summary>
+            <remarks>
+                Will be <see langword="null"/> if the user is a 'Deleted User#....' because Discord does send user data for deleted users.
+            </remarks>
             <returns>
                 A user object representing the user that created the unpinned message or <see langword="null"/>.
             </returns>
@@ -1736,6 +1759,191 @@
             <returns>
                 A role information object containing the role information after the changes were made.
             </returns>
+        </member>
+        <member name="T:Discord.Rest.ScheduledEventCreateAuditLogData">
+            <summary>
+                Contains a piece of audit log data related to a scheduled event creation.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.Id">
+            <summary>
+                Gets the snowflake id of the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.GuildId">
+            <summary>
+                Gets the snowflake id of the guild the event is associated with.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.ChannelId">
+            <summary>
+                Gets the snowflake id of the channel the event is associated with.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.CreatorId">
+            <summary>
+                Gets the snowflake id of the original creator of the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.Name">
+            <summary>
+                Gets name of the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.Description">
+            <summary>
+                Gets the description of the event. null if none is set.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.ScheduledStartTime">
+            <summary>
+                Gets the time the event was scheduled for.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.ScheduledEndTime">
+            <summary>
+                Gets the time the event was scheduled to end.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.PrivacyLevel">
+            <summary>
+                Gets the privacy level of the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.Status">
+            <summary>
+                Gets the status of the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.EntityType">
+            <summary>
+                Gets the type of the entity associated with the event (stage / void / external).
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.EntityId">
+            <summary>
+                Gets the snowflake id of the entity associated with the event (stage / void / external).
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.Location">
+            <summary>
+                Gets the metadata for the entity associated with the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.Creator">
+            <summary>
+                Gets the user that originally created the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.UserCount">
+            <summary>
+                Gets the count of users interested in this event. 
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventCreateAuditLogData.Image">
+            <summary>
+                Gets the image hash of the image that was attached to the event. Null if not set.
+            </summary>
+        </member>
+        <member name="T:Discord.Rest.ScheduledEventDeleteAuditLogData">
+            <summary>
+                Contains a piece of audit log data related to a scheduled event deleteion.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventDeleteAuditLogData.Id">
+            <summary>
+                Gets the snowflake id of the event.
+            </summary>
+        </member>
+        <member name="T:Discord.Rest.ScheduledEventInfo">
+            <summary>
+                Represents information for a scheduled event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.GuildId">
+            <summary>
+                Gets the snowflake id of the guild the event is associated with.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.ChannelId">
+            <summary>
+                Gets the snowflake id of the channel the event is associated with.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.Name">
+            <summary>
+                Gets name of the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.Description">
+            <summary>
+                Gets the description of the event. null if none is set.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.ScheduledStartTime">
+            <summary>
+                Gets the time the event was scheduled for.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.ScheduledEndTime">
+            <summary>
+                Gets the time the event was scheduled to end.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.PrivacyLevel">
+            <summary>
+                Gets the privacy level of the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.Status">
+            <summary>
+                Gets the status of the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.EntityType">
+            <summary>
+                Gets the type of the entity associated with the event (stage / void / external).
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.EntityId">
+            <summary>
+                Gets the snowflake id of the entity associated with the event (stage / void / external).
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.Location">
+            <summary>
+                Gets the metadata for the entity associated with the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.UserCount">
+            <summary>
+                Gets the count of users interested in this event. 
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventInfo.Image">
+            <summary>
+                Gets the image hash of the image that was attached to the event. Null if not set.
+            </summary>
+        </member>
+        <member name="T:Discord.Rest.ScheduledEventUpdateAuditLogData">
+            <summary>
+                Contains a piece of audit log data related to a scheduled event updates.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventUpdateAuditLogData.Id">
+            <summary>
+                Gets the snowflake id of the event.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventUpdateAuditLogData.Before">
+            <summary>
+                Gets the state before the change.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.ScheduledEventUpdateAuditLogData.After">
+            <summary>
+                Gets the state after the change.
+            </summary>
         </member>
         <member name="T:Discord.Rest.StageInfo">
             <summary>
@@ -2239,10 +2447,11 @@
             <paramref name="maxAge"/> must be lesser than 86400.
             </exception>
         </member>
-        <member name="M:Discord.Rest.ChannelHelper.SendMessageAsync(Discord.IMessageChannel,Discord.Rest.BaseDiscordClient,System.String,System.Boolean,Discord.Embed,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.RequestOptions,Discord.Embed[])">
+        <member name="M:Discord.Rest.ChannelHelper.SendMessageAsync(Discord.IMessageChannel,Discord.Rest.BaseDiscordClient,System.String,System.Boolean,Discord.Embed,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.RequestOptions,Discord.Embed[],Discord.MessageFlags)">
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.ChannelHelper.SendFileAsync(Discord.IMessageChannel,Discord.Rest.BaseDiscordClient,System.String,System.String,System.Boolean,Discord.Embed,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.RequestOptions,System.Boolean,Discord.Embed[])">
+        <member name="M:Discord.Rest.ChannelHelper.SendFileAsync(Discord.IMessageChannel,Discord.Rest.BaseDiscordClient,System.String,System.String,System.Boolean,Discord.Embed,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.RequestOptions,System.Boolean,Discord.Embed[],Discord.MessageFlags)">
             <exception cref="T:System.ArgumentException">
             <paramref name="filePath" /> is a zero-length string, contains only white space, or contains one or more
             invalid characters as defined by <see cref="M:System.IO.Path.GetInvalidPathChars"/>.
@@ -2267,12 +2476,18 @@
             <exception cref="T:System.NotSupportedException"><paramref name="filePath" /> is in an invalid format.</exception>
             <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.ChannelHelper.SendFileAsync(Discord.IMessageChannel,Discord.Rest.BaseDiscordClient,System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.RequestOptions,System.Boolean,Discord.Embed[])">
+        <member name="M:Discord.Rest.ChannelHelper.SendFileAsync(Discord.IMessageChannel,Discord.Rest.BaseDiscordClient,System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.RequestOptions,System.Boolean,Discord.Embed[],Discord.MessageFlags)">
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.ChannelHelper.SendFileAsync(Discord.IMessageChannel,Discord.Rest.BaseDiscordClient,Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.RequestOptions,Discord.Embed[])">
+        <member name="M:Discord.Rest.ChannelHelper.SendFileAsync(Discord.IMessageChannel,Discord.Rest.BaseDiscordClient,Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.RequestOptions,Discord.Embed[],Discord.MessageFlags)">
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
+        </member>
+        <member name="M:Discord.Rest.ChannelHelper.SendFilesAsync(Discord.IMessageChannel,Discord.Rest.BaseDiscordClient,System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.RequestOptions,Discord.Embed[],Discord.MessageFlags)">
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
         <member name="M:Discord.Rest.ChannelHelper.GetUserAsync(Discord.IGuildChannel,Discord.IGuild,Discord.Rest.BaseDiscordClient,System.UInt64,Discord.RequestOptions)">
             <exception cref="T:System.InvalidOperationException">Resolving permissions requires the parent guild to be downloaded.</exception>
@@ -2288,86 +2503,20 @@
                 Represents a REST-based channel that can send and receive messages.
             </summary>
         </member>
-        <member name="M:Discord.Rest.IRestMessageChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
-            <summary>
-                Sends a message to this message channel.
-            </summary>
-            <remarks>
-                This method follows the same behavior as described in <see cref="M:Discord.IMessageChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])"/>.
-                Please visit its documentation for more details on this method.
-            </remarks>
-            <param name="text">The message to be sent.</param>
-            <param name="isTTS">Determines whether the message should be read aloud by Discord or not.</param>
-            <param name="embed">The <see cref="F:Discord.EmbedType.Rich"/> <see cref="T:Discord.Embed"/> to be sent.</param>
-            <param name="options">The options to be used when sending the request.</param>
-            <param name="allowedMentions">
-                Specifies if notifications are sent for mentioned users and roles in the message <paramref name="text"/>.
-                If <c>null</c>, all mentioned roles and users will be notified.
-            </param>
-            <param name="messageReference">The message references to be included. Used to reply to specific messages.</param>
-            <param name="components">The message components to be included with this message. Used for interactions.</param>
-            <param name="stickers">A collection of stickers to send with the message.</param>
-            <param name="embeds">A array of <see cref="T:Discord.Embed"/>s to send with this response. Max 10.</param>
-            <returns>
-                A task that represents an asynchronous send operation for delivering the message. The task result
-                contains the sent message.
-            </returns>
+        <member name="M:Discord.Rest.IRestMessageChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc cref="M:Discord.IMessageChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)"/>
         </member>
-        <member name="M:Discord.Rest.IRestMessageChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
-            <summary>
-                Sends a file to this message channel with an optional caption.
-            </summary>
-            <remarks>
-                This method follows the same behavior as described in
-                <see cref="M:Discord.IMessageChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])"/>. Please visit
-                its documentation for more details on this method.
-            </remarks>
-            <param name="filePath">The file path of the file.</param>
-            <param name="text">The message to be sent.</param>
-            <param name="isTTS">Whether the message should be read aloud by Discord or not.</param>
-            <param name="embed">The <see cref="F:Discord.EmbedType.Rich" /> <see cref="T:Discord.Embed" /> to be sent.</param>
-            <param name="options">The options to be used when sending the request.</param>
-            <param name="isSpoiler">Whether the message attachment should be hidden as a spoiler.</param>
-            <param name="allowedMentions">
-                Specifies if notifications are sent for mentioned users and roles in the message <paramref name="text"/>.
-                If <c>null</c>, all mentioned roles and users will be notified.
-            </param>
-            <param name="messageReference">The message references to be included. Used to reply to specific messages.</param>
-            <param name="components">The message components to be included with this message. Used for interactions.</param>
-            <param name="stickers">A collection of stickers to send with the message.</param>
-            <param name="embeds">A array of <see cref="T:Discord.Embed"/>s to send with this response. Max 10.</param>
-            <returns>
-                A task that represents an asynchronous send operation for delivering the message. The task result
-                contains the sent message.
-            </returns>
+        <member name="M:Discord.Rest.IRestMessageChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc cref="M:Discord.IMessageChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)"/>
         </member>
-        <member name="M:Discord.Rest.IRestMessageChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
-            <summary>
-                Sends a file to this message channel with an optional caption.
-            </summary>
-            <remarks>
-                This method follows the same behavior as described in <see cref="M:Discord.IMessageChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])"/>.
-                Please visit its documentation for more details on this method.
-            </remarks>
-            <param name="stream">The <see cref="T:System.IO.Stream" /> of the file to be sent.</param>
-            <param name="filename">The name of the attachment.</param>
-            <param name="text">The message to be sent.</param>
-            <param name="isTTS">Whether the message should be read aloud by Discord or not.</param>
-            <param name="embed">The <see cref="F:Discord.EmbedType.Rich"/> <see cref="T:Discord.Embed"/> to be sent.</param>
-            <param name="options">The options to be used when sending the request.</param>
-            <param name="isSpoiler">Whether the message attachment should be hidden as a spoiler.</param>
-            <param name="allowedMentions">
-                Specifies if notifications are sent for mentioned users and roles in the message <paramref name="text"/>.
-                If <c>null</c>, all mentioned roles and users will be notified.
-            </param>
-            <param name="messageReference">The message references to be included. Used to reply to specific messages.</param>
-            <param name="components">The message components to be included with this message. Used for interactions.</param>
-            <param name="stickers">A collection of stickers to send with the message.</param>
-            <param name="embeds">A array of <see cref="T:Discord.Embed"/>s to send with this response. Max 10.</param>
-            <returns>
-                A task that represents an asynchronous send operation for delivering the message. The task result
-                contains the sent message.
-            </returns>
+        <member name="M:Discord.Rest.IRestMessageChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc cref="M:Discord.IMessageChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)"/>
+        </member>
+        <member name="M:Discord.Rest.IRestMessageChannel.SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc cref="M:Discord.IMessageChannel.SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)"/>
+        </member>
+        <member name="M:Discord.Rest.IRestMessageChannel.SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc cref="M:Discord.IMessageChannel.SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)"/>
         </member>
         <member name="M:Discord.Rest.IRestMessageChannel.GetMessageAsync(System.UInt64,Discord.RequestOptions)">
             <summary>
@@ -2543,11 +2692,12 @@
         <member name="M:Discord.Rest.RestDMChannel.GetPinnedMessagesAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentException">
             <paramref name="filePath" /> is a zero-length string, contains only white space, or contains one or more
@@ -2573,16 +2723,17 @@
             <exception cref="T:System.NotSupportedException"><paramref name="filePath" /> is in an invalid format.</exception>
             <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
         </member>
@@ -2633,19 +2784,19 @@
         <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#GetPinnedMessagesAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestDMChannel.Discord#IMessageChannel#SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
         <member name="P:Discord.Rest.RestDMChannel.Discord#IChannel#Name">
@@ -2655,6 +2806,89 @@
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestDMChannel.Discord#IChannel#GetUsersAsync(Discord.CacheMode,Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="T:Discord.Rest.RestForumChannel">
+            <summary>
+                Represents a REST-based forum channel in a guild.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.IsNsfw">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.Topic">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.DefaultAutoArchiveDuration">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.Tags">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.ThreadCreationInterval">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.DefaultSlowModeInterval">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.CategoryId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.DefaultReactionEmoji">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.DefaultSortOrder">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.DefaultLayout">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestForumChannel.Mention">
+            <inheritdoc/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.ModifyAsync(System.Action{Discord.ForumChannelProperties},Discord.RequestOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.CreatePostAsync(System.String,Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])">
+            <inheritdoc cref="M:Discord.IForumChannel.CreatePostAsync(System.String,Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])"/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.CreatePostWithFileAsync(System.String,System.String,Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])">
+            <inheritdoc cref="M:Discord.IForumChannel.CreatePostWithFileAsync(System.String,System.String,Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])"/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.CreatePostWithFileAsync(System.String,System.IO.Stream,System.String,Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])">
+            <inheritdoc cref="M:Discord.IForumChannel.CreatePostWithFileAsync(System.String,System.IO.Stream,System.String,Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])"/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.CreatePostWithFileAsync(System.String,Discord.FileAttachment,Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])">
+            <inheritdoc cref="M:Discord.IForumChannel.CreatePostWithFileAsync(System.String,Discord.FileAttachment,Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])"/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.CreatePostWithFilesAsync(System.String,System.Collections.Generic.IEnumerable{Discord.FileAttachment},Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])">
+            <inheritdoc cref="M:Discord.IForumChannel.CreatePostWithFilesAsync(System.String,System.Collections.Generic.IEnumerable{Discord.FileAttachment},Discord.ThreadArchiveDuration,System.Nullable{System.Int32},System.String,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags,Discord.ForumTag[])"/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.GetActiveThreadsAsync(Discord.RequestOptions)">
+            <inheritdoc cref="M:Discord.ITextChannel.GetActiveThreadsAsync(Discord.RequestOptions)"/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.GetJoinedPrivateArchivedThreadsAsync(System.Nullable{System.Int32},System.Nullable{System.DateTimeOffset},Discord.RequestOptions)">
+            <inheritdoc cref="M:Discord.IForumChannel.GetJoinedPrivateArchivedThreadsAsync(System.Nullable{System.Int32},System.Nullable{System.DateTimeOffset},Discord.RequestOptions)"/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.GetPrivateArchivedThreadsAsync(System.Nullable{System.Int32},System.Nullable{System.DateTimeOffset},Discord.RequestOptions)">
+            <inheritdoc cref="M:Discord.IForumChannel.GetPrivateArchivedThreadsAsync(System.Nullable{System.Int32},System.Nullable{System.DateTimeOffset},Discord.RequestOptions)"/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.GetPublicArchivedThreadsAsync(System.Nullable{System.Int32},System.Nullable{System.DateTimeOffset},Discord.RequestOptions)">
+            <inheritdoc cref="M:Discord.IForumChannel.GetPublicArchivedThreadsAsync(System.Nullable{System.Int32},System.Nullable{System.DateTimeOffset},Discord.RequestOptions)"/>
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.CreateInviteAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.CreateInviteToApplicationAsync(Discord.DefaultApplications,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.GetInvitesAsync(Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.Discord#INestedChannel#GetCategoryAsync(Discord.CacheMode,Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestForumChannel.SyncPermissionsAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="T:Discord.Rest.RestGroupChannel">
@@ -2698,11 +2932,12 @@
         <member name="M:Discord.Rest.RestGroupChannel.ModifyMessageAsync(System.UInt64,System.Action{Discord.MessageProperties},Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestGroupChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestGroupChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestGroupChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestGroupChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentException">
             <paramref name="filePath" /> is a zero-length string, contains only white space, or contains one or more
@@ -2728,23 +2963,42 @@
             <exception cref="T:System.NotSupportedException"><paramref name="filePath" /> is in an invalid format.</exception>
             <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestGroupChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestGroupChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestGroupChannel.SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestGroupChannel.SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestGroupChannel.SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestGroupChannel.SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
         <member name="M:Discord.Rest.RestGroupChannel.TriggerTypingAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestGroupChannel.EnterTypingState(Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestGroupChannel.Discord#IMessageChannel#SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestGroupChannel.Discord#IMessageChannel#SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestGroupChannel.Discord#IMessageChannel#SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestGroupChannel.Discord#IMessageChannel#SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestGroupChannel.Discord#IMessageChannel#SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestGroupChannel.Discord#IAudioChannel#ConnectAsync(System.Boolean,System.Boolean,System.Boolean)">
@@ -2766,6 +3020,9 @@
             <inheritdoc />
         </member>
         <member name="P:Discord.Rest.RestGuildChannel.GuildId">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestGuildChannel.Flags">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestGuildChannel.UpdateAsync(Discord.RequestOptions)">
@@ -2888,8 +3145,11 @@
                 Represents a REST-based stage channel in a guild.
             </summary>
         </member>
-        <member name="P:Discord.Rest.RestStageChannel.Topic">
+        <member name="P:Discord.Rest.RestStageChannel.IsTextInVoice">
             <inheritdoc/>
+            <remarks>
+                This field is always false for stage channels.
+            </remarks>
         </member>
         <member name="P:Discord.Rest.RestStageChannel.PrivacyLevel">
             <inheritdoc/>
@@ -2947,6 +3207,9 @@
         <member name="P:Discord.Rest.RestTextChannel.IsNsfw">
             <inheritdoc />
         </member>
+        <member name="P:Discord.Rest.RestTextChannel.DefaultArchiveDuration">
+            <inheritdoc />
+        </member>
         <member name="M:Discord.Rest.RestTextChannel.Update(Discord.API.Channel)">
             <inheritdoc />
         </member>
@@ -2996,11 +3259,12 @@
         <member name="M:Discord.Rest.RestTextChannel.GetPinnedMessagesAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentException">
             <paramref name="filePath" /> is a zero-length string, contains only white space, or contains one or more
@@ -3026,18 +3290,22 @@
             <exception cref="T:System.NotSupportedException"><paramref name="filePath" /> is in an invalid format.</exception>
             <exception cref="T:System.IO.IOException">An I/O error occurred while opening the file.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
             <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.ArgumentException">The only valid <see cref="T:Discord.MessageFlags"/> are <see cref="F:Discord.MessageFlags.SuppressEmbeds"/> and <see cref="F:Discord.MessageFlags.None"/>.</exception>
         </member>
         <member name="M:Discord.Rest.RestTextChannel.DeleteMessageAsync(System.UInt64,Discord.RequestOptions)">
             <inheritdoc />
@@ -3093,28 +3361,6 @@
                 of webhooks that is available in this channel.
             </returns>
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.GetCategoryAsync(Discord.RequestOptions)">
-            <summary>
-                Gets the parent (category) channel of this channel.
-            </summary>
-            <param name="options">The options to be used when sending the request.</param>
-            <returns>
-                A task that represents the asynchronous get operation. The task result contains the category channel
-                representing the parent of this channel; <c>null</c> if none is set.
-            </returns>
-        </member>
-        <member name="M:Discord.Rest.RestTextChannel.SyncPermissionsAsync(Discord.RequestOptions)">
-            <inheritdoc />
-        </member>
-        <member name="M:Discord.Rest.RestTextChannel.CreateInviteAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
-            <inheritdoc />
-        </member>
-        <member name="M:Discord.Rest.RestTextChannel.CreateInviteToApplicationAsync(Discord.DefaultApplications,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
-            <inheritdoc />
-        </member>
-        <member name="M:Discord.Rest.RestTextChannel.GetInvitesAsync(Discord.RequestOptions)">
-            <inheritdoc />
-        </member>
         <member name="M:Discord.Rest.RestTextChannel.CreateThreadAsync(System.String,Discord.ThreadType,Discord.ThreadArchiveDuration,Discord.IMessage,System.Nullable{System.Boolean},System.Nullable{System.Int32},Discord.RequestOptions)">
             <summary>
                 Creates a thread within this <see cref="T:Discord.ITextChannel"/>.
@@ -3137,7 +3383,7 @@
                 The duration on which this thread archives after.
                 <para>
                     <b>Note: </b> Options <see cref="F:Discord.ThreadArchiveDuration.OneWeek"/> and <see cref="F:Discord.ThreadArchiveDuration.ThreeDays"/>
-                    are only available for guilds that are boosted. You can check in the <see cref="P:Discord.IGuild.Features"/> to see if the 
+                    are only available for guilds that are boosted. You can check in the <see cref="P:Discord.IGuild.Features"/> to see if the
                     guild has the <b>THREE_DAY_THREAD_ARCHIVE</b> and <b>SEVEN_DAY_THREAD_ARCHIVE</b>.
                 </para>
             </param>
@@ -3147,6 +3393,31 @@
                 A task that represents the asynchronous create operation. The task result contains a <see cref="T:Discord.IThreadChannel"/>
             </returns>
         </member>
+        <member name="M:Discord.Rest.RestTextChannel.GetCategoryAsync(Discord.RequestOptions)">
+            <summary>
+                Gets the parent (category) channel of this channel.
+            </summary>
+            <param name="options">The options to be used when sending the request.</param>
+            <returns>
+                A task that represents the asynchronous get operation. The task result contains the category channel
+                representing the parent of this channel; <c>null</c> if none is set.
+            </returns>
+        </member>
+        <member name="M:Discord.Rest.RestTextChannel.SyncPermissionsAsync(Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestTextChannel.GetActiveThreadsAsync(Discord.RequestOptions)">
+            <inheritdoc cref="M:Discord.ITextChannel.GetActiveThreadsAsync(Discord.RequestOptions)"/>
+        </member>
+        <member name="M:Discord.Rest.RestTextChannel.CreateInviteAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestTextChannel.CreateInviteToApplicationAsync(Discord.DefaultApplications,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestTextChannel.GetInvitesAsync(Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
         <member name="M:Discord.Rest.RestTextChannel.Discord#ITextChannel#CreateWebhookAsync(System.String,System.IO.Stream,Discord.RequestOptions)">
             <inheritdoc />
         </member>
@@ -3154,6 +3425,9 @@
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestTextChannel.Discord#ITextChannel#GetWebhooksAsync(Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestTextChannel.Discord#ITextChannel#GetActiveThreadsAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#GetMessageAsync(System.UInt64,Discord.CacheMode,Discord.RequestOptions)">
@@ -3171,19 +3445,19 @@
         <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#GetPinnedMessagesAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[])">
+        <member name="M:Discord.Rest.RestTextChannel.Discord#IMessageChannel#SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestTextChannel.Discord#IGuildChannel#GetUserAsync(System.UInt64,Discord.CacheMode,Discord.RequestOptions)">
@@ -3227,6 +3501,18 @@
         <member name="P:Discord.Rest.RestThreadChannel.MessageCount">
             <inheritdoc/>
         </member>
+        <member name="P:Discord.Rest.RestThreadChannel.IsInvitable">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestThreadChannel.AppliedTags">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestThreadChannel.OwnerId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestThreadChannel.CreatedAt">
+            <inheritdoc cref="P:Discord.IThreadChannel.CreatedAt"/>
+        </member>
         <member name="P:Discord.Rest.RestThreadChannel.ParentChannelId">
             <summary>
                 Gets the parent text channel id.
@@ -3254,6 +3540,9 @@
             </returns>
         </member>
         <member name="M:Discord.Rest.RestThreadChannel.ModifyAsync(System.Action{Discord.TextChannelProperties},Discord.RequestOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Discord.Rest.RestThreadChannel.ModifyAsync(System.Action{Discord.ThreadChannelProperties},Discord.RequestOptions)">
             <inheritdoc/>
         </member>
         <member name="M:Discord.Rest.RestThreadChannel.AddPermissionOverwriteAsync(Discord.IRole,Discord.OverwritePermissions,Discord.RequestOptions)">
@@ -3358,9 +3647,17 @@
         <member name="M:Discord.Rest.RestThreadChannel.RemoveUserAsync(Discord.IGuildUser,Discord.RequestOptions)">
             <inheritdoc/>
         </member>
+        <member name="M:Discord.Rest.RestThreadChannel.GetActiveThreadsAsync(Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This method is not supported in threads.</exception>
+        </member>
         <member name="T:Discord.Rest.RestVoiceChannel">
             <summary>
                 Represents a REST-based voice channel in a guild.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.RestVoiceChannel.IsTextInVoice">
+            <summary>
+                Gets whether or not the guild has Text-In-Voice enabled and the voice channel is a TiV channel.
             </summary>
         </member>
         <member name="P:Discord.Rest.RestVoiceChannel.Bitrate">
@@ -3369,14 +3666,8 @@
         <member name="P:Discord.Rest.RestVoiceChannel.UserLimit">
             <inheritdoc />
         </member>
-        <member name="P:Discord.Rest.RestVoiceChannel.CategoryId">
-            <inheritdoc />
-        </member>
         <member name="P:Discord.Rest.RestVoiceChannel.RTCRegion">
             <inheritdoc/>
-        </member>
-        <member name="P:Discord.Rest.RestVoiceChannel.Mention">
-            <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestVoiceChannel.Update(Discord.API.Channel)">
             <inheritdoc />
@@ -3384,33 +3675,76 @@
         <member name="M:Discord.Rest.RestVoiceChannel.ModifyAsync(System.Action{Discord.VoiceChannelProperties},Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestVoiceChannel.GetCategoryAsync(Discord.RequestOptions)">
-            <summary>
-                Gets the parent (category) channel of this channel.
-            </summary>
-            <param name="options">The options to be used when sending the request.</param>
-            <returns>
-                A task that represents the asynchronous get operation. The task result contains the category channel
-                representing the parent of this channel; <c>null</c> if none is set.
-            </returns>
+        <member name="M:Discord.Rest.RestVoiceChannel.ModifyAsync(System.Action{Discord.TextChannelProperties},Discord.RequestOptions)">
+            <inheritdoc/>
+            <exception cref="T:System.InvalidOperationException">Cannot modify text channel properties of a voice channel.</exception>
         </member>
-        <member name="M:Discord.Rest.RestVoiceChannel.SyncPermissionsAsync(Discord.RequestOptions)">
-            <inheritdoc />
+        <member name="M:Discord.Rest.RestVoiceChannel.CreateThreadAsync(System.String,Discord.ThreadType,Discord.ThreadArchiveDuration,Discord.IMessage,System.Nullable{System.Boolean},System.Nullable{System.Int32},Discord.RequestOptions)">
+            <inheritdoc/>
+            <exception cref="T:System.InvalidOperationException">Cannot create a thread within a voice channel.</exception>
         </member>
-        <member name="M:Discord.Rest.RestVoiceChannel.CreateInviteAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
-            <inheritdoc />
+        <member name="M:Discord.Rest.RestVoiceChannel.GetMessageAsync(System.UInt64,Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
         </member>
-        <member name="M:Discord.Rest.RestVoiceChannel.CreateInviteToApplicationAsync(System.UInt64,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
-            <inheritdoc />
+        <member name="M:Discord.Rest.RestVoiceChannel.DeleteMessageAsync(Discord.IMessage,Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
         </member>
-        <member name="M:Discord.Rest.RestVoiceChannel.CreateInviteToApplicationAsync(Discord.DefaultApplications,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
-            <inheritdoc />
+        <member name="M:Discord.Rest.RestVoiceChannel.DeleteMessageAsync(System.UInt64,Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
         </member>
-        <member name="M:Discord.Rest.RestVoiceChannel.CreateInviteToStreamAsync(Discord.IUser,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,Discord.RequestOptions)">
-            <inheritdoc />
+        <member name="M:Discord.Rest.RestVoiceChannel.DeleteMessagesAsync(System.Collections.Generic.IEnumerable{Discord.IMessage},Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
         </member>
-        <member name="M:Discord.Rest.RestVoiceChannel.GetInvitesAsync(Discord.RequestOptions)">
-            <inheritdoc />
+        <member name="M:Discord.Rest.RestVoiceChannel.DeleteMessagesAsync(System.Collections.Generic.IEnumerable{System.UInt64},Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.EnterTypingState(Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.GetMessagesAsync(Discord.IMessage,Discord.Direction,System.Int32,Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.GetMessagesAsync(System.Int32,Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.GetMessagesAsync(System.UInt64,Discord.Direction,System.Int32,Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.GetPinnedMessagesAsync(Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.GetWebhookAsync(System.UInt64,Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.GetWebhooksAsync(Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.CreateWebhookAsync(System.String,System.IO.Stream,Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.ModifyMessageAsync(System.UInt64,System.Action{Discord.MessageProperties},Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.SendFileAsync(Discord.FileAttachment,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.SendFileAsync(System.IO.Stream,System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.SendFileAsync(System.String,System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,System.Boolean,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.SendFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.SendMessageAsync(System.String,System.Boolean,Discord.Embed,Discord.RequestOptions,Discord.AllowedMentions,Discord.MessageReference,Discord.MessageComponent,Discord.ISticker[],Discord.Embed[],Discord.MessageFlags)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.TriggerTypingAsync(Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">This function is only supported in Text-In-Voice channels.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestVoiceChannel.GetActiveThreadsAsync(Discord.RequestOptions)">
+            <inheritdoc/> <exception cref="T:System.NotSupportedException">Threads are not supported in voice channels</exception>
         </member>
         <member name="M:Discord.Rest.RestVoiceChannel.Discord#IAudioChannel#ConnectAsync(System.Boolean,System.Boolean,System.Boolean)">
             <inheritdoc />
@@ -3438,6 +3772,9 @@
             <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         </member>
         <member name="M:Discord.Rest.GuildHelper.CreateCategoryChannelAsync(Discord.IGuild,Discord.Rest.BaseDiscordClient,System.String,Discord.RequestOptions,System.Action{Discord.GuildChannelProperties})">
+            <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:Discord.Rest.GuildHelper.CreateForumChannelAsync(Discord.IGuild,Discord.Rest.BaseDiscordClient,System.String,Discord.RequestOptions,System.Action{Discord.ForumChannelProperties})">
             <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         </member>
         <member name="M:Discord.Rest.GuildHelper.CreateRoleAsync(Discord.IGuild,Discord.Rest.BaseDiscordClient,System.String,System.Nullable{Discord.GuildPermissions},System.Nullable{Discord.Color},System.Boolean,System.Boolean,Discord.RequestOptions)">
@@ -3661,10 +3998,12 @@
                 A task that represents the asynchronous delete operation.
             </returns>
         </member>
-        <member name="M:Discord.Rest.RestGuild.GetSlashCommandsAsync(Discord.RequestOptions)">
+        <member name="M:Discord.Rest.RestGuild.GetSlashCommandsAsync(System.Boolean,System.String,Discord.RequestOptions)">
             <summary>
                 Gets a collection of slash commands created by the current user in this guild.
             </summary>
+            <param name="withLocalizations">Whether to include full localization dictionaries in the returned objects, instead of the name localized and description localized fields.</param>
+            <param name="locale">The target locale of the localized name and description fields. Sets <c>X-Discord-Locale</c> header, which takes precedence over <c>Accept-Language</c>.</param>
             <param name="options">The options to be used when sending the request.</param>
             <returns>
                 A task that represents the asynchronous get operation. The task result contains a read-only collection of
@@ -3682,16 +4021,14 @@
                 slash command created by the current user.
             </returns>
         </member>
-        <member name="M:Discord.Rest.RestGuild.GetBansAsync(Discord.RequestOptions)">
-            <summary>
-                Gets a collection of all users banned in this guild.
-            </summary>
-            <param name="options">The options to be used when sending the request.</param>
-            <returns>
-                A task that represents the asynchronous get operation. The task result contains a read-only collection of
-                ban objects that this guild currently possesses, with each object containing the user banned and reason
-                behind the ban.
-            </returns>
+        <member name="M:Discord.Rest.RestGuild.GetBansAsync(System.Int32,Discord.RequestOptions)">
+            <inheritdoc cref="M:Discord.IGuild.GetBansAsync(System.Int32,Discord.RequestOptions)" />
+        </member>
+        <member name="M:Discord.Rest.RestGuild.GetBansAsync(System.UInt64,Discord.Direction,System.Int32,Discord.RequestOptions)">
+            <inheritdoc cref="M:Discord.IGuild.GetBansAsync(System.UInt64,Discord.Direction,System.Int32,Discord.RequestOptions)" />
+        </member>
+        <member name="M:Discord.Rest.RestGuild.GetBansAsync(Discord.IUser,Discord.Direction,System.Int32,Discord.RequestOptions)">
+            <inheritdoc cref="M:Discord.IGuild.GetBansAsync(Discord.IUser,Discord.Direction,System.Int32,Discord.RequestOptions)" />
         </member>
         <member name="M:Discord.Rest.RestGuild.GetBanAsync(Discord.IUser,Discord.RequestOptions)">
             <summary>
@@ -3963,6 +4300,18 @@
                 The created category channel.
             </returns>
         </member>
+        <member name="M:Discord.Rest.RestGuild.CreateForumChannelAsync(System.String,System.Action{Discord.ForumChannelProperties},Discord.RequestOptions)">
+            <summary>
+                Creates a category channel with the provided name.
+            </summary>
+            <param name="name">The name of the new channel.</param>
+            <param name="func">The delegate containing the properties to be applied to the channel upon its creation.</param>
+            <param name="options">The options to be used when sending the request.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="name" /> is <see langword="null"/>.</exception>
+            <returns>
+                The created category channel.
+            </returns>
+        </member>
         <member name="M:Discord.Rest.RestGuild.GetVoiceRegionsAsync(Discord.RequestOptions)">
             <summary>
                 Gets a collection of all the voice regions this guild can access.
@@ -4000,9 +4349,6 @@
             <returns>
                 A role that is associated with the specified <paramref name="id"/>; <see langword="null"/> if none is found.
             </returns>
-        </member>
-        <member name="M:Discord.Rest.RestGuild.CreateRoleAsync(System.String,System.Nullable{Discord.GuildPermissions},System.Nullable{Discord.Color},System.Boolean,Discord.RequestOptions)">
-            <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestGuild.CreateRoleAsync(System.String,System.Nullable{Discord.GuildPermissions},System.Nullable{Discord.Color},System.Boolean,System.Boolean,Discord.RequestOptions)">
             <summary>
@@ -4141,10 +4487,12 @@
                 of webhooks found within the guild.
             </returns>
         </member>
-        <member name="M:Discord.Rest.RestGuild.GetApplicationCommandsAsync(Discord.RequestOptions)">
+        <member name="M:Discord.Rest.RestGuild.GetApplicationCommandsAsync(System.Boolean,System.String,Discord.RequestOptions)">
             <summary>
                 Gets this guilds slash commands
             </summary>
+            <param name="withLocalizations">Whether to include full localization dictionaries in the returned objects, instead of the name localized and description localized fields.</param>
+            <param name="locale">The target locale of the localized name and description fields. Sets <c>X-Discord-Locale</c> header, which takes precedence over <c>Accept-Language</c>.</param>
             <param name="options">The options to be used when sending the request.</param>
             <returns>
                 A task that represents the asynchronous get operation. The task result contains a read-only collection
@@ -4304,7 +4652,7 @@
                 A task that represents the asynchronous get operation.
             </returns>
         </member>
-        <member name="M:Discord.Rest.RestGuild.CreateEventAsync(System.String,System.DateTimeOffset,Discord.GuildScheduledEventType,Discord.GuildScheduledEventPrivacyLevel,System.String,System.Nullable{System.DateTimeOffset},System.Nullable{System.UInt64},System.String,Discord.RequestOptions)">
+        <member name="M:Discord.Rest.RestGuild.CreateEventAsync(System.String,System.DateTimeOffset,Discord.GuildScheduledEventType,Discord.GuildScheduledEventPrivacyLevel,System.String,System.Nullable{System.DateTimeOffset},System.Nullable{System.UInt64},System.String,System.Nullable{Discord.Image},Discord.RequestOptions)">
             <summary>
                 Creates an event within this guild.
             </summary>
@@ -4321,8 +4669,8 @@
                 in order to use this property.
                 </remarks>
             </param>
-            <param name="speakers">A collection of speakers for the event.</param>
             <param name="location">The location of the event; links are supported</param>
+            <param name="coverImage">The optional banner image for the event.</param>
             <param name="options">The options to be used when sending the request.</param>
             <returns>
                 A task that represents the asynchronous create operation.
@@ -4340,7 +4688,7 @@
         <member name="P:Discord.Rest.RestGuild.Discord#IGuild#Roles">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#CreateEventAsync(System.String,System.DateTimeOffset,Discord.GuildScheduledEventType,Discord.GuildScheduledEventPrivacyLevel,System.String,System.Nullable{System.DateTimeOffset},System.Nullable{System.UInt64},System.String,Discord.RequestOptions)">
+        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#CreateEventAsync(System.String,System.DateTimeOffset,Discord.GuildScheduledEventType,Discord.GuildScheduledEventPrivacyLevel,System.String,System.Nullable{System.DateTimeOffset},System.Nullable{System.UInt64},System.String,System.Nullable{Discord.Image},Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetEventAsync(System.UInt64,Discord.RequestOptions)">
@@ -4349,7 +4697,13 @@
         <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetEventsAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetBansAsync(Discord.RequestOptions)">
+        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetBansAsync(System.Int32,Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetBansAsync(System.UInt64,Discord.Direction,System.Int32,Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetBansAsync(Discord.IUser,Discord.Direction,System.Int32,Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetBanAsync(Discord.IUser,Discord.RequestOptions)">
@@ -4421,13 +4775,16 @@
         <member name="M:Discord.Rest.RestGuild.Discord#IGuild#CreateCategoryAsync(System.String,System.Action{Discord.GuildChannelProperties},Discord.RequestOptions)">
             <inheritdoc />
         </member>
+        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#CreateForumChannelAsync(System.String,System.Action{Discord.ForumChannelProperties},Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
         <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetVoiceRegionsAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetIntegrationsAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#CreateIntegrationAsync(System.UInt64,System.String,Discord.RequestOptions)">
+        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#DeleteIntegrationAsync(System.UInt64,Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetInvitesAsync(Discord.RequestOptions)">
@@ -4480,7 +4837,7 @@
         <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetWebhooksAsync(Discord.RequestOptions)">
             <inheritdoc />
         </member>
-        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetApplicationCommandsAsync(Discord.RequestOptions)">
+        <member name="M:Discord.Rest.RestGuild.Discord#IGuild#GetApplicationCommandsAsync(System.Boolean,System.String,Discord.RequestOptions)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestGuild.Discord#IGuild#CreateStickerAsync(System.String,System.String,System.Collections.Generic.IEnumerable{System.String},Discord.Image,Discord.RequestOptions)">
@@ -4528,6 +4885,9 @@
         <member name="P:Discord.Rest.RestGuildEvent.Description">
             <inheritdoc/>
         </member>
+        <member name="P:Discord.Rest.RestGuildEvent.CoverImageId">
+            <inheritdoc/>
+        </member>
         <member name="P:Discord.Rest.RestGuildEvent.StartTime">
             <inheritdoc/>
         </member>
@@ -4550,6 +4910,9 @@
             <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestGuildEvent.UserCount">
+            <inheritdoc/>
+        </member>
+        <member name="M:Discord.Rest.RestGuildEvent.GetCoverImageUrl(Discord.ImageFormat,System.UInt16)">
             <inheritdoc/>
         </member>
         <member name="M:Discord.Rest.RestGuildEvent.StartAsync(Discord.RequestOptions)">
@@ -4621,42 +4984,6 @@
         <member name="M:Discord.Rest.RestGuildEvent.Discord#IGuildScheduledEvent#GetUsersAsync(System.UInt64,Discord.Direction,System.Int32,Discord.RequestOptions)">
             <inheritdoc/>
         </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.Name">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.Type">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.IsEnabled">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.IsSyncing">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.ExpireBehavior">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.ExpireGracePeriod">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.GuildId">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.RoleId">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.Account">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.SyncedAt">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.Discord#IGuildIntegration#Guild">
-            <inheritdoc />
-        </member>
-        <member name="P:Discord.Rest.RestGuildIntegration.Discord#IGuildIntegration#User">
-            <inheritdoc />
-        </member>
         <member name="P:Discord.Rest.RestUserGuild.Name">
             <inheritdoc />
         </member>
@@ -4695,6 +5022,69 @@
         <member name="P:Discord.Rest.RestVoiceRegion.IsCustom">
             <inheritdoc />
         </member>
+        <member name="T:Discord.Rest.RestIntegration">
+            <summary>
+                Represents a Rest-based implementation of <see cref="T:Discord.IIntegration"/>.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.Type">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.IsEnabled">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.IsSyncing">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.RoleId">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.HasEnabledEmoticons">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.ExpireBehavior">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.ExpireGracePeriod">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.Discord#IIntegration#User">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.Account">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.SyncedAt">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.SubscriberCount">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.IsRevoked">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.Application">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.GuildId">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestIntegration.Discord#IIntegration#Guild">
+            <inheritdoc />
+        </member>
+        <member name="T:Discord.Rest.RestIntegrationAccount">
+            <summary>
+                Represents a Rest-based implementation of <see cref="T:Discord.IIntegrationAccount"/>.
+            </summary>
+        </member>
+        <member name="T:Discord.Rest.RestIntegrationApplication">
+            <summary>
+                Represents a Rest-based implementation of <see cref="T:Discord.IIntegrationApplication"/>.
+            </summary>
+        </member>
         <member name="T:Discord.Rest.RestCommandBase">
             <summary>
                 Represents a REST-based base command interaction.
@@ -4712,7 +5102,7 @@
         </member>
         <member name="P:Discord.Rest.RestCommandBase.Data">
             <summary>
-                The data associated with this interaction.
+                Gets the data associated with this interaction.
             </summary>
         </member>
         <member name="M:Discord.Rest.RestCommandBase.Respond(System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.Embed,Discord.RequestOptions)">
@@ -4756,6 +5146,16 @@
                 A string that contains json to write back to the incoming http request.
             </returns>
         </member>
+        <member name="M:Discord.Rest.RestCommandBase.RespondWithModal(Discord.Modal,Discord.RequestOptions)">
+            <summary>
+                Responds to the interaction with a modal.
+            </summary>
+            <param name="modal">The modal to respond with.</param>
+            <param name="options">The request options for this <see langword="async"/> request.</param>
+            <returns>A string that contains json to write back to the incoming http request.</returns>
+            <exception cref="T:System.TimeoutException"></exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
         <member name="T:Discord.Rest.RestCommandBaseData`1">
             <summary>
                 Represents the base data tied with the <see cref="T:Discord.Rest.RestCommandBase"/> interaction.
@@ -4781,7 +5181,7 @@
         </member>
         <member name="P:Discord.Rest.RestMessageCommand.Data">
             <summary>
-                The data associated with this interaction.
+                Gets the data associated with this interaction.
             </summary>
         </member>
         <member name="P:Discord.Rest.RestMessageCommand.Discord#IMessageCommandInteraction#Data">
@@ -4803,7 +5203,7 @@
         <member name="P:Discord.Rest.RestMessageCommandData.Options">
             <inheritdoc/>
             <remarks>
-                <b>Note</b> Not implemented for <see cref="!:SocketMessageCommandData"/>
+                <b>Note</b> Not implemented for <see cref="T:Discord.Rest.RestMessageCommandData"/>
             </remarks>
         </member>
         <member name="P:Discord.Rest.RestMessageCommandData.Discord#IMessageCommandInteractionData#Message">
@@ -4838,11 +5238,61 @@
         <member name="P:Discord.Rest.RestUserCommandData.Options">
             <inheritdoc/>
             <remarks>
-                <b>Note</b> Not implemented for <see cref="!:SocketUserCommandData"/>
+                <b>Note</b> Not implemented for <see cref="T:Discord.Rest.RestUserCommandData"/>
             </remarks>
         </member>
         <member name="P:Discord.Rest.RestUserCommandData.Discord#IUserCommandInteractionData#User">
             <inheritdoc/>
+        </member>
+        <member name="T:Discord.Rest.InteractionProperties">
+            <summary>
+                Represents a class that contains data present in all interactions to evaluate against at rest-interaction creation.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.InteractionProperties.Type">
+            <summary>
+                The type of this interaction.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.InteractionProperties.CommandType">
+            <summary>
+                Gets the type of application command this interaction represents.
+            </summary>
+            <remarks>
+                This will be <see langword="null"/> if the <see cref="P:Discord.Rest.InteractionProperties.Type"/> is not <see cref="F:Discord.InteractionType.ApplicationCommand"/>.
+            </remarks>
+        </member>
+        <member name="P:Discord.Rest.InteractionProperties.Name">
+            <summary>
+                Gets the name of the interaction.
+            </summary>
+            <remarks>
+                This will be <see cref="F:System.String.Empty"/> if the <see cref="P:Discord.Rest.InteractionProperties.Type"/> is not <see cref="F:Discord.InteractionType.ApplicationCommand"/>.
+            </remarks>
+        </member>
+        <member name="P:Discord.Rest.InteractionProperties.CustomId">
+            <summary>
+                Gets the custom ID of the interaction.
+            </summary>
+            <remarks>
+                This will be <see cref="F:System.String.Empty"/> if the <see cref="P:Discord.Rest.InteractionProperties.Type"/> is not <see cref="F:Discord.InteractionType.MessageComponent"/> or <see cref="F:Discord.InteractionType.ModalSubmit"/>.
+            </remarks>
+        </member>
+        <member name="P:Discord.Rest.InteractionProperties.GuildId">
+            <summary>
+                Gets the guild ID of the interaction.
+            </summary>
+            <remarks>
+                This will be <see langword="null"/> if this interaction was not executed in a guild.
+            </remarks>
+        </member>
+        <member name="P:Discord.Rest.InteractionProperties.ChannelId">
+            <summary>
+                Gets the channel ID of the interaction.
+            </summary>
+            <remarks>
+                This will be <see langword="null"/> if this interaction is <see cref="F:Discord.InteractionType.Ping"/>.
+            </remarks>
         </member>
         <member name="T:Discord.Rest.RestMessageComponent">
             <summary>
@@ -4920,11 +5370,27 @@
             <exception cref="T:System.TimeoutException"></exception>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
+        <member name="M:Discord.Rest.RestMessageComponent.RespondWithModal(Discord.Modal,Discord.RequestOptions)">
+            <summary>
+                Responds to the interaction with a modal.
+            </summary>
+            <param name="modal">The modal to respond with.</param>
+            <param name="options">The request options for this <see langword="async"/> request.</param>
+            <returns>A string that contains json to write back to the incoming http request.</returns>
+            <exception cref="T:System.TimeoutException"></exception>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
         <member name="P:Discord.Rest.RestMessageComponent.Discord#IComponentInteraction#Data">
             <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestMessageComponent.Discord#IComponentInteraction#Message">
             <inheritdoc/>
+        </member>
+        <member name="M:Discord.Rest.RestMessageComponent.Discord#IComponentInteraction#UpdateAsync(System.Action{Discord.MessageProperties},Discord.RequestOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestMessageComponent.Discord#IComponentInteraction#DeferLoadingAsync(System.Boolean,Discord.RequestOptions)">
+            <inheritdoc />
         </member>
         <member name="T:Discord.Rest.RestMessageComponentData">
             <summary>
@@ -4932,19 +5398,130 @@
             </summary>
         </member>
         <member name="P:Discord.Rest.RestMessageComponentData.CustomId">
-            <summary>
-                Gets the components Custom Id that was clicked.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestMessageComponentData.Type">
-            <summary>
-                Gets the type of the component clicked.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestMessageComponentData.Values">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestMessageComponentData.Value">
+            <inheritdoc/>
+        </member>
+        <member name="T:Discord.Rest.RestModal">
             <summary>
-                Gets the value(s) of a <see cref="T:Discord.SelectMenuComponent"/> interaction response.
+                Represents a user submitted <see cref="T:Discord.Modal"/>.
             </summary>
+        </member>
+        <member name="M:Discord.Rest.RestModal.Defer(System.Boolean,Discord.RequestOptions)">
+            <summary>
+                Acknowledges this interaction with the <see cref="F:Discord.InteractionResponseType.DeferredChannelMessageWithSource"/>.
+            </summary>
+            <returns>
+                A string that contains json to write back to the incoming http request.
+            </returns>
+        </member>
+        <member name="M:Discord.Rest.RestModal.FollowupAsync(System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.Embed,Discord.RequestOptions)">
+            <summary>
+                Sends a followup message for this interaction.
+            </summary>
+            <param name="text">The text of the message to be sent.</param>
+            <param name="embeds">A array of embeds to send with this response. Max 10.</param>
+            <param name="isTTS"><see langword="true"/> if the message should be read out by a text-to-speech reader, otherwise <see langword="false"/>.</param>
+            <param name="ephemeral"><see langword="true"/> if the response should be hidden to everyone besides the invoker of the command, otherwise <see langword="false"/>.</param>
+            <param name="allowedMentions">The allowed mentions for this response.</param>
+            <param name="options">The request options for this response.</param>
+            <param name="component">A <see cref="T:Discord.MessageComponent"/> to be sent with this response.</param>
+            <param name="embed">A single embed to send with this response. If this is passed alongside an array of embeds, the single embed will be ignored.</param>
+            <returns>
+                The sent message.
+            </returns>
+        </member>
+        <member name="M:Discord.Rest.RestModal.FollowupWithFileAsync(System.IO.Stream,System.String,System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.Embed,Discord.RequestOptions)">
+            <summary>
+                Sends a followup message for this interaction.
+            </summary>
+            <param name="text">The text of the message to be sent.</param>
+            <param name="fileStream">The file to upload.</param>
+            <param name="fileName">The file name of the attachment.</param>
+            <param name="embeds">A array of embeds to send with this response. Max 10.</param>
+            <param name="isTTS"><see langword="true"/> if the message should be read out by a text-to-speech reader, otherwise <see langword="false"/>.</param>
+            <param name="ephemeral"><see langword="true"/> if the response should be hidden to everyone besides the invoker of the command, otherwise <see langword="false"/>.</param>
+            <param name="allowedMentions">The allowed mentions for this response.</param>
+            <param name="options">The request options for this response.</param>
+            <param name="component">A <see cref="T:Discord.MessageComponent"/> to be sent with this response.</param>
+            <param name="embed">A single embed to send with this response. If this is passed alongside an array of embeds, the single embed will be ignored.</param>
+            <returns>
+                The sent message.
+            </returns>
+        </member>
+        <member name="M:Discord.Rest.RestModal.FollowupWithFileAsync(System.String,System.String,System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.Embed,Discord.RequestOptions)">
+            <summary>
+                Sends a followup message for this interaction.
+            </summary>
+            <param name="text">The text of the message to be sent.</param>
+            <param name="filePath">The file to upload.</param>
+            <param name="fileName">The file name of the attachment.</param>
+            <param name="embeds">A array of embeds to send with this response. Max 10.</param>
+            <param name="isTTS"><see langword="true"/> if the message should be read out by a text-to-speech reader, otherwise <see langword="false"/>.</param>
+            <param name="ephemeral"><see langword="true"/> if the response should be hidden to everyone besides the invoker of the command, otherwise <see langword="false"/>.</param>
+            <param name="allowedMentions">The allowed mentions for this response.</param>
+            <param name="options">The request options for this response.</param>
+            <param name="component">A <see cref="T:Discord.MessageComponent"/> to be sent with this response.</param>
+            <param name="embed">A single embed to send with this response. If this is passed alongside an array of embeds, the single embed will be ignored.</param>
+            <returns>
+                The sent message.
+            </returns>
+        </member>
+        <member name="M:Discord.Rest.RestModal.Respond(System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.Embed,Discord.RequestOptions)">
+            <summary>
+                Responds to an Interaction with type <see cref="F:Discord.InteractionResponseType.ChannelMessageWithSource"/>.
+            </summary>
+            <param name="text">The text of the message to be sent.</param>
+            <param name="embeds">A array of embeds to send with this response. Max 10.</param>
+            <param name="isTTS"><see langword="true"/> if the message should be read out by a text-to-speech reader, otherwise <see langword="false"/>.</param>
+            <param name="ephemeral"><see langword="true"/> if the response should be hidden to everyone besides the invoker of the command, otherwise <see langword="false"/>.</param>
+            <param name="allowedMentions">The allowed mentions for this response.</param>
+            <param name="options">The request options for this response.</param>
+            <param name="component">A <see cref="T:Discord.MessageComponent"/> to be sent with this response.</param>
+            <param name="embed">A single embed to send with this response. If this is passed alongside an array of embeds, the single embed will be ignored.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Message content is too long, length must be less or equal to <see cref="F:Discord.DiscordConfig.MaxMessageSize"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">The parameters provided were invalid or the token was invalid.</exception>
+            <returns>
+                A string that contains json to write back to the incoming http request.
+            </returns>
+        </member>
+        <member name="M:Discord.Rest.RestModal.FollowupWithFilesAsync(System.Collections.Generic.IEnumerable{Discord.FileAttachment},System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.Embed,Discord.RequestOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Discord.Rest.RestModal.FollowupWithFileAsync(Discord.FileAttachment,System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.Embed,Discord.RequestOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Discord.Rest.RestModal.RespondWithModal(Discord.Modal,Discord.RequestOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Discord.Rest.RestModalData">
+            <summary>
+                Represents data sent from a <see cref="F:Discord.InteractionType.ModalSubmit"/> Interaction.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.RestModalData.CustomId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestModalData.Components">
+            <summary>
+                Represents the <see cref="T:Discord.Modal"/>s components submitted by the user.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.RestModalData.Type">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestModalData.Values">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestModalData.Value">
+            <inheritdoc/>
         </member>
         <member name="T:Discord.Rest.RestApplicationCommand">
             <summary>
@@ -4966,10 +5543,45 @@
         <member name="P:Discord.Rest.RestApplicationCommand.IsDefaultPermission">
             <inheritdoc/>
         </member>
+        <member name="P:Discord.Rest.RestApplicationCommand.IsEnabledInDm">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommand.IsNsfw">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommand.DefaultMemberPermissions">
+            <inheritdoc/>
+        </member>
         <member name="P:Discord.Rest.RestApplicationCommand.Options">
             <summary>
-                The options of this command.
+                Gets a collection of options for this command.
             </summary>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommand.NameLocalizations">
+            <summary>
+                Gets the localization dictionary for the name field of this command.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommand.DescriptionLocalizations">
+            <summary>
+                Gets the localization dictionary for the description field of this command.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommand.NameLocalized">
+            <summary>
+                Gets the localized name of this command.
+            </summary>
+            <remarks>
+                Only returned when the `withLocalizations` query parameter is set to <see langword="false"/> when requesting the command.
+            </remarks>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommand.DescriptionLocalized">
+            <summary>
+                Gets the localized description of this command.
+            </summary>
+            <remarks>
+                Only returned when the `withLocalizations` query parameter is set to <see langword="false"/> when requesting the command.
+            </remarks>
         </member>
         <member name="P:Discord.Rest.RestApplicationCommand.CreatedAt">
             <inheritdoc/>
@@ -4993,6 +5605,19 @@
         </member>
         <member name="P:Discord.Rest.RestApplicationCommandChoice.Value">
             <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommandChoice.NameLocalizations">
+            <summary>
+                Gets the localization dictionary for the name field of this command option choice.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommandChoice.NameLocalized">
+            <summary>
+                Gets the localized name of this command option choice.
+            </summary>
+            <remarks>
+                Only returned when the `withLocalizations` query parameter is set to <see langword="false"/> when requesting the command.
+            </remarks>
         </member>
         <member name="T:Discord.Rest.RestApplicationCommandOption">
             <summary>
@@ -5023,20 +5648,50 @@
         <member name="P:Discord.Rest.RestApplicationCommandOption.MaxValue">
             <inheritdoc/>
         </member>
+        <member name="P:Discord.Rest.RestApplicationCommandOption.MinLength">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommandOption.MaxLength">
+            <inheritdoc/>
+        </member>
         <member name="P:Discord.Rest.RestApplicationCommandOption.Choices">
             <summary>
-                A collection of <see cref="T:Discord.Rest.RestApplicationCommandChoice"/>'s for this command.
+                Gets a collection of <see cref="T:Discord.Rest.RestApplicationCommandChoice"/>s for this command.
             </summary>
         </member>
         <member name="P:Discord.Rest.RestApplicationCommandOption.Options">
             <summary>
-                A collection of <see cref="T:Discord.Rest.RestApplicationCommandOption"/>'s for this command.
+                Gets a collection of <see cref="T:Discord.Rest.RestApplicationCommandOption"/>s for this command.
             </summary>
         </member>
         <member name="P:Discord.Rest.RestApplicationCommandOption.ChannelTypes">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommandOption.NameLocalizations">
             <summary>
-                The allowed channel types for this option.
+                Gets the localization dictionary for the name field of this command option.
             </summary>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommandOption.DescriptionLocalizations">
+            <summary>
+                Gets the localization dictionary for the description field of this command option.
+            </summary>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommandOption.NameLocalized">
+            <summary>
+                Gets the localized name of this command option.
+            </summary>
+            <remarks>
+                Only returned when the `withLocalizations` query parameter is set to <see langword="false"/> when requesting the command.
+            </remarks>
+        </member>
+        <member name="P:Discord.Rest.RestApplicationCommandOption.DescriptionLocalized">
+            <summary>
+                Gets the localized description of this command option.
+            </summary>
+            <remarks>
+                Only returned when the `withLocalizations` query parameter is set to <see langword="false"/> when requesting the command.
+            </remarks>
         </member>
         <member name="T:Discord.Rest.RestGlobalCommand">
             <summary>
@@ -5063,7 +5718,7 @@
         </member>
         <member name="P:Discord.Rest.RestGuildCommand.GuildId">
             <summary>
-                The guild Id where this command originates.
+                Gets the guild Id where this command originates.
             </summary>
         </member>
         <member name="M:Discord.Rest.RestGuildCommand.DeleteAsync(Discord.RequestOptions)">
@@ -5132,33 +5787,80 @@
             <summary>
                 Gets the user who invoked the interaction.
             </summary>
+            <remarks>
+                If this user is an <see cref="T:Discord.Rest.RestGuildUser"/> and <see cref="P:Discord.Rest.DiscordRestConfig.APIOnRestInteractionCreation"/> is set to false,
+                <see cref="P:Discord.Rest.RestGuildUser.Guild"/> will return <see langword="null"/>
+            </remarks>
+        </member>
+        <member name="P:Discord.Rest.RestInteraction.UserLocale">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestInteraction.GuildLocale">
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestInteraction.CreatedAt">
             <inheritdoc/>
         </member>
-        <member name="P:Discord.Rest.RestInteraction.HasResponded">
-            <summary>
-                Gets whether or not this interaction has been responded to.
-            </summary>
-            <remarks>
-                This property is locally set -- if you're running multiple bots
-                off the same token then this property won't be in sync with them.
-            </remarks>
-        </member>
         <member name="P:Discord.Rest.RestInteraction.IsValidToken">
             <summary>
-                <see langword="true"/> if the token is valid for replying to, otherwise <see langword="false"/>.
+                Gets whether or not the token used to respond to this interaction is valid.
             </summary>
         </member>
         <member name="P:Discord.Rest.RestInteraction.Channel">
             <summary>
                 Gets the channel that this interaction was executed in.
             </summary>
+            <remarks>
+                This property will be <see langword="null"/> if <see cref="P:Discord.Rest.DiscordRestConfig.APIOnRestInteractionCreation"/> is set to false.
+                Call <see cref="M:Discord.Rest.RestInteraction.GetChannelAsync(Discord.RequestOptions)"/> to set this property and get the interaction channel.
+            </remarks>
+        </member>
+        <member name="P:Discord.Rest.RestInteraction.ChannelId">
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestInteraction.Guild">
             <summary>
-                Gets the guild this interaction was executed in.
+                Gets the guild this interaction was executed in if applicable.
             </summary>
+            <remarks>
+                This property will be <see langword="null"/> if <see cref="P:Discord.Rest.DiscordRestConfig.APIOnRestInteractionCreation"/> is set to false
+                or if the interaction was not executed in a guild.
+            </remarks>
+        </member>
+        <member name="P:Discord.Rest.RestInteraction.GuildId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestInteraction.HasResponded">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestInteraction.IsDMInteraction">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestInteraction.ApplicationId">
+            <inheritdoc/>
+        </member>
+        <member name="M:Discord.Rest.RestInteraction.GetChannelAsync(Discord.RequestOptions)">
+            <summary>
+                Gets the channel this interaction was executed in. Will be a DM channel if the interaction was executed in DM.
+            </summary>
+            <remarks>
+                Calling this method successfully will populate the <see cref="P:Discord.Rest.RestInteraction.Channel"/> property.
+                After this, further calls to this method will no longer call the API, and depend on the value set in <see cref="P:Discord.Rest.RestInteraction.Channel"/>.
+            </remarks>
+            <param name="options">The request options for this <see langword="async"/> request.</param>
+            <returns>A Rest channel to send messages to.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if no channel can be received.</exception>
+        </member>
+        <member name="M:Discord.Rest.RestInteraction.GetGuildAsync(Discord.RequestOptions)">
+            <summary>
+                Gets the guild this interaction was executed in if applicable.
+            </summary>
+            <remarks>
+                Calling this method successfully will populate the <see cref="P:Discord.Rest.RestInteraction.Guild"/> property.
+                After this, further calls to this method will no longer call the API, and depend on the value set in <see cref="P:Discord.Rest.RestInteraction.Guild"/>.
+            </remarks>
+            <param name="options">The request options for this <see langword="async"/> request.</param>
+            <returns>The guild this interaction was executed in. <see langword="null"/> if the interaction was executed inside DM.</returns>
         </member>
         <member name="M:Discord.Rest.RestInteraction.Defer(System.Boolean,Discord.RequestOptions)">
             <inheritdoc/>
@@ -5180,6 +5882,9 @@
                 A task that represents an asynchronous send operation for delivering the message. The task result
                 contains the sent message.
             </returns>
+        </member>
+        <member name="M:Discord.Rest.RestInteraction.RespondWithModal(Discord.Modal,Discord.RequestOptions)">
+            <inheritdoc/>
         </member>
         <member name="M:Discord.Rest.RestInteraction.Respond(System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.Embed,Discord.RequestOptions)">
             <inheritdoc/>
@@ -5287,6 +5992,9 @@
         <member name="M:Discord.Rest.RestInteraction.Discord#IDiscordInteraction#DeferAsync(System.Boolean,Discord.RequestOptions)">
             <inheritdoc/>
         </member>
+        <member name="M:Discord.Rest.RestInteraction.Discord#IDiscordInteraction#RespondWithModalAsync(Discord.Modal,Discord.RequestOptions)">
+            <inheritdoc/>
+        </member>
         <member name="M:Discord.Rest.RestInteraction.Discord#IDiscordInteraction#FollowupAsync(System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.MessageComponent,Discord.Embed,Discord.RequestOptions)">
             <inheritdoc/>
         </member>
@@ -5376,34 +6084,22 @@
             </summary>
         </member>
         <member name="P:Discord.Rest.RestAutocompleteInteractionData.CommandName">
-            <summary>
-                Gets the name of the invoked command.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestAutocompleteInteractionData.CommandId">
-            <summary>
-                Gets the id of the invoked command.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestAutocompleteInteractionData.Type">
-            <summary>
-                Gets the type of the invoked command.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestAutocompleteInteractionData.Version">
-            <summary>
-                Gets the version of the invoked command.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestAutocompleteInteractionData.Current">
-            <summary>
-                Gets the current autocomplete option that is actively being filled out.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestAutocompleteInteractionData.Options">
-            <summary>
-                Gets a collection of all the other options the executing users has filled out.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="T:Discord.Rest.RestSlashCommand">
             <summary>
@@ -5968,7 +6664,9 @@
         <member name="P:Discord.Rest.RestRole.Icon">
             <inheritdoc />
         </member>
-        <!-- Badly formed XML comment ignored for member "P:Discord.Rest.RestRole.Emoji" -->
+        <member name="P:Discord.Rest.RestRole.Emoji">
+            <inheritdoc />
+        </member>
         <member name="P:Discord.Rest.RestRole.Permissions">
             <inheritdoc />
         </member>
@@ -6039,16 +6737,28 @@
         <member name="P:Discord.Rest.RestConnection.Id">
             <inheritdoc />
         </member>
-        <member name="P:Discord.Rest.RestConnection.Type">
+        <member name="P:Discord.Rest.RestConnection.Name">
             <inheritdoc />
         </member>
-        <member name="P:Discord.Rest.RestConnection.Name">
+        <member name="P:Discord.Rest.RestConnection.Type">
             <inheritdoc />
         </member>
         <member name="P:Discord.Rest.RestConnection.IsRevoked">
             <inheritdoc />
         </member>
-        <member name="P:Discord.Rest.RestConnection.IntegrationIds">
+        <member name="P:Discord.Rest.RestConnection.Integrations">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestConnection.Verified">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestConnection.FriendSync">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestConnection.ShowActivity">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestConnection.Visibility">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestConnection.ToString">
@@ -6088,6 +6798,9 @@
         <member name="P:Discord.Rest.RestGroupUser.Discord#IVoiceState#IsStreaming">
             <inheritdoc />
         </member>
+        <member name="P:Discord.Rest.RestGroupUser.Discord#IVoiceState#IsVideoing">
+            <inheritdoc />
+        </member>
         <member name="P:Discord.Rest.RestGroupUser.Discord#IVoiceState#RequestToSpeakTimestamp">
             <inheritdoc />
         </member>
@@ -6096,8 +6809,14 @@
                 Represents a REST-based guild user.
             </summary>
         </member>
+        <member name="P:Discord.Rest.RestGuildUser.DisplayName">
+            <inheritdoc />
+        </member>
         <member name="P:Discord.Rest.RestGuildUser.Nickname">
             <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestGuildUser.DisplayAvatarId">
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestGuildUser.GuildAvatarId">
             <inheritdoc/>
@@ -6176,6 +6895,12 @@
             <inheritdoc />
             <exception cref="T:System.InvalidOperationException">Resolving permissions requires the parent guild to be downloaded.</exception>
         </member>
+        <member name="M:Discord.Rest.RestGuildUser.GetDisplayAvatarUrl(Discord.ImageFormat,System.UInt16)">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestGuildUser.GetGuildAvatarUrl(Discord.ImageFormat,System.UInt16)">
+            <inheritdoc />
+        </member>
         <member name="P:Discord.Rest.RestGuildUser.Discord#IGuildUser#Guild">
             <inheritdoc />
         </member>
@@ -6195,6 +6920,9 @@
             <inheritdoc />
         </member>
         <member name="P:Discord.Rest.RestGuildUser.Discord#IVoiceState#IsStreaming">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Rest.RestGuildUser.Discord#IVoiceState#IsVideoing">
             <inheritdoc />
         </member>
         <member name="P:Discord.Rest.RestGuildUser.Discord#IVoiceState#RequestToSpeakTimestamp">
@@ -6240,19 +6968,16 @@
             </summary>
         </member>
         <member name="P:Discord.Rest.RestThreadUser.Thread">
-            <summary>
-                Gets the <see cref="T:Discord.Rest.RestThreadChannel"/> this user is in.
-            </summary>
+            <inheritdoc/>
         </member>
-        <member name="P:Discord.Rest.RestThreadUser.JoinedAt">
-            <summary>
-                Gets the timestamp for when this user joined this thread.
-            </summary>
+        <member name="P:Discord.Rest.RestThreadUser.ThreadJoinedAt">
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestThreadUser.Guild">
-            <summary>
-                Gets the guild this user is in.
-            </summary>
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestThreadUser.Mention">
+            <inheritdoc/>
         </member>
         <member name="M:Discord.Rest.RestThreadUser.GetGuildUser">
             <summary>
@@ -6366,10 +7091,19 @@
         <member name="P:Discord.Rest.RestWebhookUser.Discord#IGuildUser#JoinedAt">
             <inheritdoc />
         </member>
+        <member name="P:Discord.Rest.RestWebhookUser.Discord#IGuildUser#DisplayName">
+            <inheritdoc />
+        </member>
         <member name="P:Discord.Rest.RestWebhookUser.Discord#IGuildUser#Nickname">
             <inheritdoc />
         </member>
+        <member name="P:Discord.Rest.RestWebhookUser.Discord#IGuildUser#DisplayAvatarId">
+            <inheritdoc/>
+        </member>
         <member name="P:Discord.Rest.RestWebhookUser.Discord#IGuildUser#GuildAvatarId">
+            <inheritdoc />
+        </member>
+        <member name="M:Discord.Rest.RestWebhookUser.Discord#IGuildUser#GetDisplayAvatarUrl(Discord.ImageFormat,System.UInt16)">
             <inheritdoc />
         </member>
         <member name="M:Discord.Rest.RestWebhookUser.Discord#IGuildUser#GetGuildAvatarUrl(Discord.ImageFormat,System.UInt16)">
@@ -6450,6 +7184,9 @@
         <member name="P:Discord.Rest.RestWebhookUser.Discord#IVoiceState#IsStreaming">
             <inheritdoc />
         </member>
+        <member name="P:Discord.Rest.RestWebhookUser.Discord#IVoiceState#IsVideoing">
+            <inheritdoc />
+        </member>
         <member name="P:Discord.Rest.RestWebhookUser.Discord#IVoiceState#RequestToSpeakTimestamp">
             <inheritdoc />
         </member>
@@ -6509,6 +7246,33 @@
             <param name="func">The delegate containing the properties to be applied to the user upon being added to the guild.</param>
             <param name="options">The options to be used when sending the request.</param>
         </member>
+        <member name="T:Discord.Rest.StringExtensions">
+            <summary>
+                Responsible for formatting certain entities as Json <see langword="string"/>, to reuse later on.
+            </summary>
+        </member>
+        <member name="M:Discord.Rest.StringExtensions.ToJsonString(Discord.EmbedBuilder,Newtonsoft.Json.Formatting)">
+            <summary>
+                Gets a Json formatted <see langword="string"/> from an <see cref="T:Discord.EmbedBuilder"/>.
+            </summary>
+            <remarks>
+                See <see cref="M:Discord.EmbedBuilder.TryParse(System.String,Discord.EmbedBuilder@)"/> to parse Json back into embed.
+            </remarks>
+            <param name="builder">The builder to format as Json <see langword="string"/>.</param>
+            <param name="formatting">The formatting in which the Json will be returned.</param>
+            <returns>A Json <see langword="string"/> containing the data from the <paramref name="builder"/>.</returns>
+        </member>
+        <member name="M:Discord.Rest.StringExtensions.ToJsonString(Discord.Embed,Newtonsoft.Json.Formatting)">
+            <summary>
+                Gets a Json formatted <see langword="string"/> from an <see cref="T:Discord.Embed"/>.
+            </summary>
+            <remarks>
+                See <see cref="M:Discord.EmbedBuilder.TryParse(System.String,Discord.EmbedBuilder@)"/> to parse Json back into embed.
+            </remarks>
+            <param name="embed">The embed to format as Json <see langword="string"/>.</param>
+            <param name="formatting">The formatting in which the Json will be returned.</param>
+            <returns>A Json <see langword="string"/> containing the data from the <paramref name="embed"/>.</returns>
+        </member>
         <member name="T:Discord.Rest.RestInteractionContext`1">
             <summary>
                 Represents a Rest based context of an <see cref="T:Discord.IDiscordInteraction"/>.
@@ -6550,6 +7314,9 @@
                 If this property is <see langword="null"/> the default callback will be used.
             </remarks>
         </member>
+        <member name="P:Discord.Rest.RestInteractionContext`1.SegmentMatches">
+            <inheritdoc cref="P:Discord.IRouteMatchContainer.SegmentMatches"/>
+        </member>
         <member name="M:Discord.Rest.RestInteractionContext`1.#ctor(Discord.Rest.DiscordRestClient,`0)">
             <summary>
                 Initializes a new <see cref="T:Discord.Rest.RestInteractionContext`1"/>. 
@@ -6564,6 +7331,12 @@
             <param name="client">The underlying client.</param>
             <param name="interaction">The underlying interaction.</param>
             <param name="interactionResponseCallback">The callback for outgoing json.</param>
+        </member>
+        <member name="M:Discord.Rest.RestInteractionContext`1.SetSegmentMatches(System.Collections.Generic.IEnumerable{Discord.IRouteSegmentMatch})">
+            <inheritdoc/>
+        </member>
+        <member name="P:Discord.Rest.RestInteractionContext`1.Discord#IRouteMatchContainer#SegmentMatches">
+            <inheritdoc/>
         </member>
         <member name="P:Discord.Rest.RestInteractionContext`1.Discord#IInteractionContext#Client">
             <inheritdoc/>
@@ -6582,22 +7355,22 @@
         </member>
         <member name="T:Discord.Rest.RestInteractionContext">
             <summary>
-                Represents a Rest based context of an <see cref="T:Discord.IDiscordInteraction"/>
+                Represents a Rest based context of an <see cref="T:Discord.IDiscordInteraction"/>.
             </summary>
         </member>
         <member name="M:Discord.Rest.RestInteractionContext.#ctor(Discord.Rest.DiscordRestClient,Discord.Rest.RestInteraction)">
             <summary>
-                Initializes a new <see cref="T:Discord.Rest.RestInteractionContext"/> 
+                Initializes a new <see cref="T:Discord.Rest.RestInteractionContext"/>.
             </summary>
-            <param name="client">The underlying client</param>
-            <param name="interaction">The underlying interaction</param>
+            <param name="client">The underlying client.</param>
+            <param name="interaction">The underlying interaction.</param>
         </member>
         <member name="M:Discord.Rest.RestInteractionContext.#ctor(Discord.Rest.DiscordRestClient,Discord.Rest.RestInteraction,System.Func{System.String,System.Threading.Tasks.Task})">
             <summary>
-                Initializes a new <see cref="T:Discord.Rest.RestInteractionContext"/> 
+                Initializes a new <see cref="T:Discord.Rest.RestInteractionContext"/>.
             </summary>
-            <param name="client">The underlying client</param>
-            <param name="interaction">The underlying interaction</param>
+            <param name="client">The underlying client.</param>
+            <param name="interaction">The underlying interaction.</param>
             <param name="interactionResponseCallback">The callback for outgoing json.</param>
         </member>
         <member name="T:Discord.Attachment">
@@ -6625,6 +7398,12 @@
             <inheritdoc />
         </member>
         <member name="P:Discord.Attachment.Ephemeral">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Attachment.Description">
+            <inheritdoc />
+        </member>
+        <member name="P:Discord.Attachment.ContentType">
             <inheritdoc />
         </member>
         <member name="M:Discord.Attachment.ToString">

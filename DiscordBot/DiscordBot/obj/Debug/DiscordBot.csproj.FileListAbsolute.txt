@@ -1,14 +1,6 @@
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\bin\Debug\DiscordBot.exe.config
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\bin\Debug\DiscordBot.exe
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\bin\Debug\DiscordBot.pdb
-C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.csproj.AssemblyReference.cache
-C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.csproj.SuggestedBindingRedirects.cache
-C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.Form1.resources
-C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.Properties.Resources.resources
-C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.csproj.GenerateResource.cache
-C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.csproj.CoreCompileInputs.cache
-C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.exe
-C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.pdb
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\bin\Debug\Discord.Net.Commands.dll
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\bin\Debug\Discord.Net.Core.dll
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\bin\Debug\Discord.Net.Interactions.dll
@@ -47,4 +39,9 @@ C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\b
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\bin\Debug\System.ValueTuple.xml
+C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.csproj.AssemblyReference.cache
+C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.csproj.SuggestedBindingRedirects.cache
+C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.csproj.CoreCompileInputs.cache
 C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.csproj.CopyComplete
+C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.exe
+C:\Users\schmidt\Documents\GitHub\Unity_Repo\CSharp_Repo\DiscordBot\DiscordBot\obj\Debug\DiscordBot.pdb
