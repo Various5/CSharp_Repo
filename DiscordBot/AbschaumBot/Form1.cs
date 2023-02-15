@@ -104,6 +104,7 @@ namespace AbschaumBot
         {
             // Close the form when the close button is clicked
             this.Close();
+            Application.Exit();
         }
 
         private void Overlay_Resize(object sender, EventArgs e)
