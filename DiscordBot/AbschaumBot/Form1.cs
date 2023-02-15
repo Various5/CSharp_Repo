@@ -28,6 +28,7 @@ namespace AbschaumBot
         private Button minimizeButton;
         private Button closeButton;
         private bool isMinimized;
+        private CommandList commandList;
 
         public Overlay()
         {
@@ -80,6 +81,26 @@ namespace AbschaumBot
 
             // Handle the Resize event to restore the form when it is maximized
             this.Resize += new EventHandler(Overlay_Resize);
+
+            // Initialize the CommandList instance
+            this.commandList = new CommandList();
+
+            // Add a button to the form to call the WriteTest method
+            Button writeTestButton = new Button();
+            writeTestButton.Text = "Write Test";
+            writeTestButton.Font = new Font("Arial", 12, FontStyle.Bold);
+            writeTestButton.ForeColor = Color.Blue;
+            writeTestButton.FlatStyle = FlatStyle.Flat;
+            writeTestButton.FlatAppearance.BorderSize = 0;
+            writeTestButton.AutoSize = true;
+            writeTestButton.Location = new Point(10, 10);
+            this.Controls.Add(writeTestButton);
+            writeTestButton.Click += new EventHandler(WriteTestButton_Click);
+        }
+        private void WriteTestButton_Click(object sender, EventArgs e)
+        {
+            // Call the WriteTest method of the CommandList instance
+            this.commandList.Writetest();
         }
 
         private void MinimizeButton_Click(object sender, EventArgs e)
