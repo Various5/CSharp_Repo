@@ -14,6 +14,10 @@ public class CarController : MonoBehaviour
         AllWheelDrive
     }
 
+    [Header("Car Health")]
+    public float carHealth = 100f;
+    public Image healthBarFill; // Assign this in the inspector
+
     public DriveType driveType;
 
     public WheelCollider frontLeftWheelCollider;
@@ -247,21 +251,52 @@ public class CarController : MonoBehaviour
 
             if (zombie != null)
             {
-                if (speed > 20 / 3.6f) // Speed in m/s (20 km/h)
-                {
-                    zombie.ApplyDamage(100); // Instant kill
-                }
-                else if (speed > 10 / 3.6f)
-                {
-                    zombie.ApplyDamage(zombie.maxHealth * 0.03f); // 3% damage
-                }
-                else if (speed > 5 / 3.6f)
-                {
-                    zombie.ApplyDamage(zombie.maxHealth * 0.01f); // 1% damage
-                }
+                float damage = CalculateDamage(speed);
+                zombie.ApplyDamage(damage);
+                ApplyDamageToCar(damage); // Apply some damage to the car as well
             }
         }
     }
+
+    private void ApplyDamageToCar(float damage)
+    {
+        carHealth -= damage;
+        UpdateHealthBar();
+        if (carHealth <= 0)
+        {
+            // Handle the destruction of the car, game over, etc.
+        }
+    }
+    private void UpdateHealthBar()
+    {
+        if (healthBarFill != null)
+        {
+            healthBarFill.fillAmount = carHealth / 100f;
+        }
+        else
+        {
+            Debug.LogWarning("Health bar fill image is not assigned in the inspector.");
+        }
+    }
+    private float CalculateDamage(float speed)
+    {
+        // You can adjust these values and add more complexity if you want
+        if (speed > 20 / 3.6f) // Speed in m/s (20 km/h)
+        {
+            return 100; // Instant kill
+        }
+        else if (speed > 10 / 3.6f)
+        {
+            return carHealth * 0.03f; // 3% damage
+        }
+        else if (speed > 5 / 3.6f)
+        {
+            return carHealth * 0.01f; // 1% damage
+        }
+
+        return 0;
+    }
+
     public void StopCar()
     {
         rb.velocity = Vector3.zero;
