@@ -118,6 +118,37 @@ public class ThirdPersonController : MonoBehaviour
         }
     }
 
+    public void SwapItems(int index1, int index2)
+    {
+        if (index1 >= 0 && index1 < inventory.Count && index2 >= 0 && index2 < inventory.Count)
+        {
+            // Swap items in the inventory list
+            Item temp = inventory[index1];
+            inventory[index1] = inventory[index2];
+            inventory[index2] = temp;
+
+            // Update the UI
+            inventoryUI.UpdateInventory(inventory);
+        }
+    }
+
+
+    public void RemoveItemFromInventory(int index)
+    {
+        if (index >= 0 && index < inventory.Count)
+        {
+            Item item = inventory[index];
+            inventory.RemoveAt(index);
+
+            // Spawn the item in the game world
+            // ...
+
+            // Update the inventory UI
+            inventoryUI.UpdateInventory(inventory);
+        }
+    }
+
+
     void PauseGame()
     {
         Time.timeScale = 0; // Pauses the game
