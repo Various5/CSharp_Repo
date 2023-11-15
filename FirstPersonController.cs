@@ -37,9 +37,12 @@ public class FirstPersonController : MonoBehaviour
     private float nextHungerDecayTime = 0f;
     private float nextThirstDecayTime = 0f;
 
+    private Animator animator; // Add an Animator for the player's model
+
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>(); // Get the Animator component
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -75,6 +78,12 @@ public class FirstPersonController : MonoBehaviour
 
         playerVelocity.y += gravityValue * Time.deltaTime;
         characterController.Move(playerVelocity * Time.deltaTime);
+
+        // Handling animations
+        bool isMoving = x != 0 || z != 0;
+        bool isRunning = isMoving && Input.GetKey(KeyCode.LeftShift);
+        animator.SetBool("isRunning", isRunning);
+        animator.SetBool("isWalking", isMoving && !isRunning);
     }
 
     void HandleLook()
@@ -89,6 +98,8 @@ public class FirstPersonController : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * lookSensitivity;
         transform.Rotate(Vector3.up * mouseX);
     }
+
+
     public void ApplyDamage(float damage)
     {
         health -= damage;
@@ -102,6 +113,7 @@ public class FirstPersonController : MonoBehaviour
         int index = isMelee ? 0 : 1;
 
         GameObject newWeapon = Instantiate(weaponPrefab, Vector3.zero, Quaternion.identity); // Adjust the position and rotation as needed
+        newWeapon.transform.parent = transform; // Make the weapon a child of the player
         newWeapon.SetActive(false);
 
         if (inventory[index] != null)
@@ -110,6 +122,8 @@ public class FirstPersonController : MonoBehaviour
         }
 
         inventory[index] = newWeapon;
+        ActivateWeapon(index); // Automatically activate the picked up weapon
+
     }
     void HandleHunger()
     {
@@ -167,10 +181,12 @@ public class FirstPersonController : MonoBehaviour
             if (inventory[0] != null && inventory[0].activeSelf) // Check if melee weapon is active
             {
                 MeleeAttack();
+                animator.SetTrigger("meleeAttack"); // Trigger melee attack animation
             }
             else if (inventory[1] != null && inventory[1].activeSelf) // Check if ranged weapon is active
             {
                 RangedAttack();
+                animator.SetTrigger("rangedAttack"); // Trigger ranged attack animation
             }
         }
     }
@@ -180,10 +196,9 @@ public class FirstPersonController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 2f)) // 2 meters range
         {
-            ZombieController zombie = hit.transform.GetComponent<ZombieController>();
-            if (zombie != null)
+            if (hit.transform.CompareTag("Enemy"))
             {
-                zombie.ApplyDamage(25); // Example damage amount
+                hit.transform.GetComponent<ZombieController>().ApplyDamage(25); // Example damage amount, make sure all enemies have EnemyController
             }
         }
     }
@@ -193,11 +208,11 @@ public class FirstPersonController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 100f)) // 100 meters range
         {
-            ZombieController zombie = hit.transform.GetComponent<ZombieController>();
-            if (zombie != null)
+            if (hit.transform.CompareTag("Enemy"))
             {
-                zombie.ApplyDamage(50); // Example damage amount
+                hit.transform.GetComponent<ZombieController>().ApplyDamage(50); // Example damage amount
             }
         }
     }
+
 }

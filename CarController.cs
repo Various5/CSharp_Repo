@@ -242,7 +242,7 @@ public class CarController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collided with: " + collision.gameObject.name); // Debugging
+      //  Debug.Log("Collided with: " + collision.gameObject.name); // Debugging
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
