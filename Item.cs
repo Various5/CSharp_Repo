@@ -1,22 +1,46 @@
 using UnityEngine;
+using static ThirdPersonController;
 
-[System.Serializable]
-public class Item
+[CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item")]
+public class Item : ScriptableObject
 {
     public string itemName;
     public int itemID;
     public GameObject itemPrefab;
     public bool isStackable;
     public int stackSize;
-    public Sprite itemImage; // Sprite to represent the item in the UI
+    public Sprite itemImage; // Sprite to represent the item in UI
+    public ItemType itemType; // Existing field for item type
+    public WeaponType weaponType; // New field for weapon type
+    public int currencyValue; // New field for currency value
 
-    public Item(string name, int id, GameObject prefab, bool stackable, int stack = 0, Sprite image = null)
+    // Use method (Implement functionality based on item type)
+    public void Use()
     {
-        itemName = name;
-        itemID = id;
-        itemPrefab = prefab;
-        isStackable = stackable;
-        stackSize = stack;
-        itemImage = image;
+        // Example: If it's a consumable, apply its effect
+        if (itemType == ItemType.Consumable)
+        {
+            Debug.Log($"{itemName} consumed!");
+            // Apply effects here
+        }
     }
+}
+
+[System.Serializable]
+public enum ItemType
+{
+    Weapon,
+    Consumable,
+    Armor,
+    // Add more types as needed
+}
+public enum WeaponType
+{
+    None,
+    Pistol,
+    Shotgun,
+    Rifle,
+    Sword,
+    Axe,
+    // Other types as needed
 }

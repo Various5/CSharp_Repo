@@ -367,7 +367,17 @@ public class CarController : MonoBehaviour
             }
         }
     }
-
+    public void ToggleCarState()
+    {
+        if (isPlayerInCar)
+        {
+            ExitCar();
+        }
+        else
+        {
+            EnterCar();
+        }
+    }
     public void ExitCar()
     {
         isPlayerInCar = false;

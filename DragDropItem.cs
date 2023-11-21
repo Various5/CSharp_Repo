@@ -1,33 +1,82 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class DragDropItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private InventorySlot originalSlot;
-    private ThirdPersonController controller; // Reference to inventory controller
+    private ThirdPersonController controller;
+    private Image itemImage; // Image of the item being dragged
+    private Canvas canvas;
+    private GameObject itemPrefab;
+    public RectTransform inventoryPanel;
 
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         originalSlot = GetComponentInParent<InventorySlot>();
-        controller = FindObjectOfType<ThirdPersonController>(); // Find the inventory controller
+        controller = FindObjectOfType<ThirdPersonController>();
+        itemImage = GetComponent<Image>();
+        canvas = FindCanvasInParent();
+    }
+
+    public void SetItemPrefab(GameObject prefab)
+    {
+        itemPrefab = prefab;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        canvasGroup.alpha = 0.6f;
-        canvasGroup.blocksRaycasts = false;
+        itemImage.raycastTarget = false; // Disable raycast so it doesn't interfere with drop
+        canvasGroup.blocksRaycasts = false; // Allow events to pass through the dragged item
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Canvas canvas = FindCanvasInParent();
         if (canvas != null)
         {
-            rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor; // Adjust for canvas scale
+            rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        itemImage.raycastTarget = true; // Re-enable raycast
+        canvasGroup.blocksRaycasts = true;
+
+        // Use a raycast to check if the end drag position is over the inventory UI
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            GameObject hitObject = eventData.pointerCurrentRaycast.gameObject;
+
+            // Check if the GameObject we're over is part of the inventory UI
+            if (hitObject != null && hitObject.transform.IsChildOf(inventoryPanel.transform))
+            {
+                // It's over the inventory UI, so handle as a regular item move within the inventory
+                if (hitObject.GetComponent<InventorySlot>() != null)
+                {
+                    InventorySlot newSlot = hitObject.GetComponent<InventorySlot>();
+                    DroppedOnSlot(newSlot);
+                }
+                else
+                {
+                    // Snap back to the original slot if it's not dropped on a valid slot
+                    rectTransform.anchoredPosition = originalSlot.GetComponent<RectTransform>().anchoredPosition;
+                }
+            }
+            else
+            {
+                // Snap back to the original slot if dropped on some other UI element that's not the inventory
+                rectTransform.anchoredPosition = originalSlot.GetComponent<RectTransform>().anchoredPosition;
+            }
+        }
+        else
+        {
+            // Dropped outside any UI element, including the inventory UI
+            DropItemOutsideInventory();
         }
     }
 
@@ -35,48 +84,27 @@ public class DragDropItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     {
         return GetComponentInParent<Canvas>();
     }
-    public void OnEndDrag(PointerEventData eventData)
+
+    public void DroppedOnSlot(InventorySlot newSlot)
     {
-        canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = true;
-
-        if (originalSlot == null)
+        if (originalSlot != newSlot)
         {
-            Debug.LogError("originalSlot is null in OnEndDrag");
-            return; // Prevent NullReferenceException
+            controller.SwapItems(originalSlot.slotIndex, newSlot.slotIndex);
+            originalSlot = newSlot; // Update the original slot reference
         }
 
-        if (controller == null)
-        {
-            Debug.LogError("controller is null in OnEndDrag");
-            return; // Prevent NullReferenceException
-        }
-        
-        RectTransform slotRectTransform = originalSlot.GetComponent<RectTransform>();
-        if (slotRectTransform != null)
-        {
-            rectTransform.anchoredPosition = slotRectTransform.anchoredPosition; // Snap to the slot
-        }
-        else
-        {
-            Debug.LogError("RectTransform on originalSlot is null");
-        }
-
+        rectTransform.anchoredPosition = newSlot.GetComponent<RectTransform>().anchoredPosition;
     }
 
-        public void DroppedOnSlot(InventorySlot newSlot)
+    private void DropItemOutsideInventory()
     {
-        if (originalSlot == newSlot)
+        // Assuming itemPrefab is correctly set
+        if (itemPrefab != null)
         {
-            // Item dropped back to its original slot
-            rectTransform.anchoredPosition = originalSlot.GetComponent<RectTransform>().anchoredPosition;
+            Vector3 dropPosition = controller.transform.position + controller.transform.forward; // Drop in front of the player
+            Instantiate(itemPrefab, dropPosition, Quaternion.identity);
         }
-        else
-        {
-            // Swap logic with the new slot
-            controller.SwapItems(originalSlot.GetSlotIndex(), newSlot.GetSlotIndex());
-            originalSlot = newSlot; // Update the original slot reference
-            rectTransform.anchoredPosition = newSlot.GetComponent<RectTransform>().anchoredPosition;
-        }
+
+        controller.RemoveItemFromInventory(originalSlot.slotIndex);
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
+using Pathfinding; // Import the A* Pathfinding namespace
 using UnityEngine.UI;
-using UnityEngine.AI; // Required for NavMesh Agent
 
 public class ZombieController : MonoBehaviour
 {
@@ -27,7 +27,7 @@ public class ZombieController : MonoBehaviour
     private Transform target; // The target (usually the player)
     private Rigidbody rb;
     private Animator animator; // Animator for controlling zombie animations
-    private NavMeshAgent navMeshAgent; // NavMesh Agent for movement
+    private IAstarAI astarAI; // A* Pathfinding AI interface
 
     private GameObject healthBar;
     private Image healthFillImage; // Image component of the health bar
@@ -50,7 +50,7 @@ public class ZombieController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         target = GameObject.FindGameObjectWithTag("Player").transform;
-        navMeshAgent = GetComponent<NavMeshAgent>(); // Initialize NavMesh Agent
+        astarAI = GetComponent<IAstarAI>(); // Initialize A* Pathfinding AI
         timeToChangeDirection = Random.Range(1, 5);
 
         InitializeHealthBar();
@@ -63,7 +63,7 @@ public class ZombieController : MonoBehaviour
             return; // Skip update loop if the zombie is dying
         }
 
-        FindClosestTarget(); // Update target each frame
+        // FindClosestTarget(); // This line can be removed if AIDestinationSetter is used
 
         switch (currentState)
         {
@@ -91,10 +91,7 @@ public class ZombieController : MonoBehaviour
     {
         if (healthBarPrefab != null)
         {
-            // Instantiate the health bar prefab and parent it to the current object
             healthBar = Instantiate(healthBarPrefab, transform.position + new Vector3(0, 2, 0), Quaternion.identity, transform);
-
-            // Correct the path to just "HealthFill" since "HealthBar" is the root object of the prefab
             Transform healthFillTransform = healthBar.transform.Find("HealthBarBackground/HealthFill");
 
             if (healthFillTransform != null)
@@ -114,7 +111,6 @@ public class ZombieController : MonoBehaviour
                 Debug.LogError("HealthFill GameObject not found");
             }
 
-            // Assuming you have a Billboard script that makes the health bar face the camera
             Billboard billboard = healthBar.AddComponent<Billboard>();
             if (Camera.main != null)
             {
@@ -130,8 +126,6 @@ public class ZombieController : MonoBehaviour
             Debug.LogError("HealthBar prefab is not assigned");
         }
     }
-
-
 
     private void HandleIdleState()
     {
@@ -182,9 +176,9 @@ public class ZombieController : MonoBehaviour
                 {
                     MoveTowardsTarget(target.position, runSpeed);
                 }
-                else if (navMeshAgent != null)
+                else if (astarAI != null)
                 {
-                    navMeshAgent.ResetPath();
+                    astarAI.destination = transform.position; // Stop the AI
                 }
 
                 if (distanceToPlayer <= attackRange)
@@ -221,13 +215,15 @@ public class ZombieController : MonoBehaviour
     {
         if (target != null && Vector3.Distance(transform.position, target.position) <= attackRange && IsPlayerInLineOfSight())
         {
+            Debug.Log("Attempting to attack player");
             animator.SetTrigger("Attack");
 
             if (Time.time > lastAttackTime + 1f / attackRate)
             {
-                FirstPersonController player = target.GetComponent<FirstPersonController>();
+                ThirdPersonController player = target.GetComponent<ThirdPersonController>();
                 if (player != null)
                 {
+                    Debug.Log($"Attacking player for {attackDamage} damage");
                     player.ApplyDamage(attackDamage);
                 }
                 lastAttackTime = Time.time;
@@ -239,36 +235,13 @@ public class ZombieController : MonoBehaviour
         }
     }
 
-    private void AdjustPathForAvoidance()
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 2f); // 2 meters radius for detection
-        foreach (var hitCollider in hitColliders)
-        {
-            if (hitCollider.gameObject != gameObject && hitCollider.CompareTag("Zombie")) // Check for other zombies
-            {
-                Vector3 directionAway = transform.position - hitCollider.transform.position;
-                MoveTowardsTarget(transform.position + directionAway.normalized, moveSpeed);
-                break;
-            }
-        }
-    }
 
     void MoveTowardsTarget(Vector3 targetPosition, float speed)
     {
-        float distanceToTarget = Vector3.Distance(transform.position, targetPosition);
-
-        if (distanceToTarget > minDistanceToPlayer)
+        if (targetPosition != null && astarAI != null)
         {
-            Vector3 directionToTarget = (targetPosition - transform.position).normalized;
-            if (navMeshAgent != null && navMeshAgent.enabled)
-            {
-                navMeshAgent.SetDestination(targetPosition);
-                navMeshAgent.speed = speed;
-            }
-            else
-            {
-                rb.MovePosition(transform.position + directionToTarget * speed * Time.deltaTime);
-            }
+            astarAI.destination = targetPosition; // Set the destination for A* AI
+            astarAI.maxSpeed = speed; // Set the speed
         }
     }
 
@@ -282,28 +255,6 @@ public class ZombieController : MonoBehaviour
             }
         }
         return false;
-    }
-
-    private void FindClosestTarget()
-    {
-        float closestDistance = detectionRange;
-        Transform closestTarget = null;
-
-        foreach (string tag in enemyTags)
-        {
-            GameObject[] targets = GameObject.FindGameObjectsWithTag(tag);
-            foreach (GameObject potentialTarget in targets)
-            {
-                float distance = Vector3.Distance(transform.position, potentialTarget.transform.position);
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestTarget = potentialTarget.transform;
-                }
-            }
-        }
-
-        target = closestTarget;
     }
 
     private Vector3 GetNewDirection()
@@ -332,10 +283,13 @@ public class ZombieController : MonoBehaviour
         {
             isDying = true;
 
-            if (navMeshAgent != null)
+            // Disable the AIPath, RichAI, or AILerp component instead of IAstarAI
+            var aiComponent = GetComponent<AIPath>(); // or GetComponent<RichAI>() or GetComponent<AILerp>()
+            if (aiComponent != null)
             {
-                navMeshAgent.enabled = false;
+                aiComponent.enabled = false;
             }
+
             rb.isKinematic = true;
             currentState = State.Idle;
 
@@ -352,6 +306,7 @@ public class ZombieController : MonoBehaviour
             Destroy(gameObject, 3f);
         }
     }
+
 
     private void SpawnBloodDecals(Vector3 position)
     {
