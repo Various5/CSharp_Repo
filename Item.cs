@@ -12,8 +12,9 @@ public class Item : ScriptableObject
     public Sprite itemImage; // Sprite to represent the item in UI
     public ItemType itemType; // Existing field for item type
     public WeaponType weaponType; // New field for weapon type
-    public int currencyValue; // New field for currency value
-
+    public int Value; // New field for currency value
+    public int durability; // New field for item durability
+    public int requiredLevel;
     // Use method (Implement functionality based on item type)
     public void Use()
     {
@@ -32,7 +33,9 @@ public enum ItemType
     Weapon,
     Consumable,
     Armor,
-    // Add more types as needed
+    Equipment,
+    QuestItem,
+    Misc,
 }
 public enum WeaponType
 {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour, IDropHandler
 {
@@ -16,17 +17,28 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         return itemData;
     }
 
+    public bool IsEmpty()
+    {
+        return itemData == null;
+    }
+
+    public void ClearSlot()
+    {
+        itemData = null;
+        GetComponent<Image>().sprite = null;
+        GetComponentInChildren<Text>().text = "";
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
         DragDropItem droppedItem = eventData.pointerDrag.GetComponent<DragDropItem>();
         if (droppedItem != null)
         {
-            droppedItem.DroppedOnSlot(this);
+            InventorySlot originalSlot = droppedItem.GetOriginalSlot();
+            if (originalSlot != this)
+            {
+                InventoryUI.Instance.SwapItems(this, originalSlot);
+            }
         }
-    }
-
-    public int GetSlotIndex()
-    {
-        return slotIndex;
     }
 }

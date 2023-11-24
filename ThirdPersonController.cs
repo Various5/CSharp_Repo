@@ -67,7 +67,7 @@ public class ThirdPersonController : MonoBehaviour
     public GameObject inventoryPanel;
     public GameObject WeaponInventoryPanel;
     private bool isInventoryOpen = false;
-    public InventoryUI inventoryUI;
+    private InventoryUI inventoryUI;
 
     [Header("Death Settings")]
     public Image deathScreenOverlay; // Assign a UI Image with red color
@@ -109,10 +109,24 @@ public class ThirdPersonController : MonoBehaviour
     }
     private void Start()
     {
+        inventoryUI = FindObjectOfType<InventoryUI>();
+        if (inventoryUI == null)
+        {
+            Debug.LogError("InventoryUI instance not found in the scene.");
+            return;
+        }
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         cameraOffset = playerCamera.transform.position - cameraFollowTarget.position;
         Cursor.lockState = CursorLockMode.Locked;
+        inventoryUI = FindObjectOfType<InventoryUI>();
+        if (inventoryUI == null)
+        {
+            Debug.LogError("InventoryUI instance not found in the scene.");
+            return;
+        }
+
+        inventory = new List<Item>();
         UpdateUI();
     }
     private void Update()
@@ -187,6 +201,12 @@ public class ThirdPersonController : MonoBehaviour
 
     public void PickupItem(Item item)
     {
+        if (inventoryUI == null)
+        {
+            Debug.LogError("InventoryUI is not set in ThirdPersonController.");
+            return;
+        }
+
         if (inventory.Count >= inventorySize) return;
 
         if (item.isStackable)

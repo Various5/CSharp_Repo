@@ -1,16 +1,17 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections;
 
 public class DragDropItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    public GameObject itemPrefab;
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private InventorySlot originalSlot;
     private ThirdPersonController controller;
     private Image itemImage; // Image of the item being dragged
     private Canvas canvas;
-    private GameObject itemPrefab;
     public RectTransform inventoryPanel;
 
     private void Awake()
@@ -30,8 +31,12 @@ public class DragDropItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        itemImage.raycastTarget = false; // Disable raycast so it doesn't interfere with drop
-        canvasGroup.blocksRaycasts = false; // Allow events to pass through the dragged item
+        if (originalSlot.IsEmpty())
+        {
+            return;
+        }
+        itemImage.raycastTarget = false;
+        canvasGroup.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -44,40 +49,38 @@ public class DragDropItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        itemImage.raycastTarget = true; // Re-enable raycast
+        itemImage.raycastTarget = true;
         canvasGroup.blocksRaycasts = true;
 
-        // Use a raycast to check if the end drag position is over the inventory UI
         if (EventSystem.current.IsPointerOverGameObject())
         {
             GameObject hitObject = eventData.pointerCurrentRaycast.gameObject;
-
-            // Check if the GameObject we're over is part of the inventory UI
             if (hitObject != null && hitObject.transform.IsChildOf(inventoryPanel.transform))
             {
-                // It's over the inventory UI, so handle as a regular item move within the inventory
-                if (hitObject.GetComponent<InventorySlot>() != null)
+                InventorySlot newSlot = hitObject.GetComponent<InventorySlot>();
+                if (newSlot != null)
                 {
-                    InventorySlot newSlot = hitObject.GetComponent<InventorySlot>();
                     DroppedOnSlot(newSlot);
                 }
                 else
                 {
-                    // Snap back to the original slot if it's not dropped on a valid slot
-                    rectTransform.anchoredPosition = originalSlot.GetComponent<RectTransform>().anchoredPosition;
+                    SnapBackToOriginalSlot();
                 }
             }
             else
             {
-                // Snap back to the original slot if dropped on some other UI element that's not the inventory
-                rectTransform.anchoredPosition = originalSlot.GetComponent<RectTransform>().anchoredPosition;
+                SnapBackToOriginalSlot();
             }
         }
         else
         {
-            // Dropped outside any UI element, including the inventory UI
             DropItemOutsideInventory();
         }
+    }
+
+    private void SnapBackToOriginalSlot()
+    {
+        rectTransform.anchoredPosition = originalSlot.GetComponent<RectTransform>().anchoredPosition;
     }
 
     private Canvas FindCanvasInParent()
@@ -93,18 +96,35 @@ public class DragDropItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             originalSlot = newSlot; // Update the original slot reference
         }
 
-        rectTransform.anchoredPosition = newSlot.GetComponent<RectTransform>().anchoredPosition;
+        // Smoothly snap to the new slot
+        StartCoroutine(SmoothSnapToSlot(newSlot.GetComponent<RectTransform>().anchoredPosition));
+    }
+
+    private IEnumerator SmoothSnapToSlot(Vector2 targetPosition)
+    {
+        float time = 0;
+        Vector2 startPosition = rectTransform.anchoredPosition;
+        float duration = 0.2f; // Duration for snapping
+
+        while (time < duration)
+        {
+            rectTransform.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        rectTransform.anchoredPosition = targetPosition;
+    }
+
+    public InventorySlot GetOriginalSlot()
+    {
+        return originalSlot;
     }
 
     private void DropItemOutsideInventory()
     {
-        // Assuming itemPrefab is correctly set
-        if (itemPrefab != null)
-        {
-            Vector3 dropPosition = controller.transform.position + controller.transform.forward; // Drop in front of the player
-            Instantiate(itemPrefab, dropPosition, Quaternion.identity);
-        }
-
+        Vector3 dropPosition = controller.transform.position + controller.transform.forward;
+        Instantiate(itemPrefab, dropPosition, Quaternion.identity);
         controller.RemoveItemFromInventory(originalSlot.slotIndex);
     }
 }
