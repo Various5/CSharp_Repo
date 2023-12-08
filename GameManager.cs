@@ -2,23 +2,45 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public delegate void OnZombieKilled();
-    public static event OnZombieKilled onZombieKilled;
+    // Define statuses
+    public int health;
+    public int karma;
+    public int influence;
 
-    public static int ZombieKillCount { get; private set; }
+    // Singleton instance
+    public static GameManager Instance { get; private set; }
 
-    public static void IncrementKillCount()
+    private void Awake()
     {
-        ZombieKillCount++;
-        Debug.Log("Zombie killed. Total kills: " + ZombieKillCount);
-
-        // Call the event
-        onZombieKilled?.Invoke();
+        // Ensure there is only one GameManager
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    // Optionally, you can have a method to reset the kill count if needed
-    public static void ResetKillCount()
+    // Method to handle progression
+    public void CompleteLevel()
     {
-        ZombieKillCount = 0;
+        // Implement level completion logic
+    }
+
+    // Method to handle game over
+    public void GameOver()
+    {
+        // Implement game over logic
+    }
+
+    // Update statuses
+    public void UpdateStatuses(int healthChange, int karmaChange, int influenceChange)
+    {
+        health += healthChange;
+        karma += karmaChange;
+        influence += influenceChange;
     }
 }

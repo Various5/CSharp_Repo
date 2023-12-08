@@ -1,36 +1,61 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using System.Collections.Generic;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    public Text killCountText; // Assign this in the inspector with your Text component for kill count
-    public Text currencyText; // Assign this in the inspector with your Text component for currency
+    public TextMeshProUGUI logText;
+    public TextMeshProUGUI animalCountText;
+    public TextMeshProUGUI killsHighscoreText;
 
-    private void OnEnable()
+    private List<string> logMessages = new List<string>();
+    private int maxLogMessages = 5; // Maximum number of log messages to display
+
+    private void Awake()
     {
-        GameManager.onZombieKilled += UpdateKillCount;
-        CurrencyManager.onCurrencyChanged += UpdateCurrencyDisplay; // Subscribe to the currency changed event
+        Animal.OnAnimalBirth += UpdateLog;
+        Animal.OnAnimalDeath += UpdateLog;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        GameManager.onZombieKilled -= UpdateKillCount;
-        CurrencyManager.onCurrencyChanged -= UpdateCurrencyDisplay; // Unsubscribe to avoid memory leaks
+        Animal.OnAnimalBirth -= UpdateLog;
+        Animal.OnAnimalDeath -= UpdateLog;
     }
 
-    private void Start()
+    private void UpdateLog(string message)
     {
-        UpdateKillCount(); // Initial update on start
-        UpdateCurrencyDisplay(); // Initial update on start
+        logMessages.Add(message);
+        UpdateLogText();
     }
 
-    private void UpdateKillCount()
+    private void UpdateLogText()
     {
-        killCountText.text = "Zombies Killed: " + GameManager.ZombieKillCount.ToString();
+        while (logMessages.Count > maxLogMessages)
+        {
+            logMessages.RemoveAt(0); // Remove the oldest message
+        }
+
+        logText.text = string.Join("\n", logMessages.ToArray());
     }
 
-    private void UpdateCurrencyDisplay()
+    public void UpdateAnimalCountScoreboard(Dictionary<string, int> animalCounts)
     {
-        currencyText.text = "Currency: " + CurrencyManager.Currency.ToString();
+        animalCountText.text = "Animal Counts:\n";
+        foreach (var count in Animal.SpeciesCount)
+        {
+            animalCountText.text += count.Key + ": " + count.Value + "\n";
+        }
+    }
+
+    public void UpdateKillsScoreboard()
+    {
+        killsHighscoreText.text = "Kills Highscore:\n";
+        foreach (var item in Animal.KillCounts.OrderByDescending(key => key.Value))
+        {
+            killsHighscoreText.text += item.Key + ": " + item.Value + "\n";
+        }
     }
 }
